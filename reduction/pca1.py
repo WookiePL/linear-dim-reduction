@@ -37,8 +37,8 @@ def process_pca(url, title):
     ax.set_ylabel('Principal Component 2', fontsize = 15)
     ax.set_title(title + ', 2 component PCA', fontsize = 20)
 
-    targets = [1, 2, 3]
-    colors = ['r', 'g', 'b']
+    targets = [0, 1, 2, 3, 4]
+    colors = ['r', 'g', 'b', 'y']
     for target, color in zip(targets,colors):
         indicesToKeep = finalDf['num, the predicted attribute'] == target
         ax.scatter(finalDf.loc[indicesToKeep, 'principal component 1']
