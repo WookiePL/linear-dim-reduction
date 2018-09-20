@@ -8,7 +8,7 @@ def process_pca(url, title):
     # load dataset into Pandas DataFrame
     df = pd.read_csv(url, names=['age', 'sex', 'cp', 'trestbps', 'chol', 'fbs', 'restecg', 'thalach', 'exang', 'oldpeak', 'slope', 'ca', 'thal', 'num, the predicted attribute'])
 
-    features = ['age', 'sex', 'cp', 'trestbps', 'chol', 'fbs', 'restecg', 'thalach', 'exang', 'oldpeak', 'slope', 'ca', 'thal', 'num, the predicted attribute']
+    features = ['age', 'sex', 'cp', 'trestbps', 'chol', 'fbs', 'restecg', 'thalach', 'exang', 'oldpeak', 'slope', 'ca', 'thal']
     df = df.replace('?', '0')
     df.convert_objects(convert_numeric=True)
 
@@ -38,7 +38,8 @@ def process_pca(url, title):
     ax.set_title(title + ', 2 component PCA', fontsize = 20)
 
     targets = [0, 1, 2, 3, 4]
-    colors = ['r', 'g', 'b', 'y']
+    # colors = ['r', 'y', 'g', 'b', 'm']
+    colors = ['r', 'g', 'b', 'm', 'y']
     for target, color in zip(targets,colors):
         indicesToKeep = finalDf['num, the predicted attribute'] == target
         ax.scatter(finalDf.loc[indicesToKeep, 'principal component 1']
