@@ -4,7 +4,7 @@ from sklearn.decomposition import PCA
 import numpy as np
 import matplotlib.pyplot as plt
 
-url = "https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data"
+url = "D:\\mgr\\iris\\iris.data"
 
 # load dataset into Pandas DataFrame
 df = pd.read_csv(url, names=['sepal length','sepal width','petal length','petal width','target'])
