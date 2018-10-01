@@ -9,8 +9,8 @@ def make_num_binary(item):
 
 
 def save_plot_as_png_file(plt):
+    FOLDER_NAME = "plots/"
     plt2 = plt
     date = str(datetime.now().strftime('%Y-%m-%d %H%M%S'))
 
-    plt2.savefig(date + ".png")
-
+    plt2.savefig(FOLDER_NAME + date + ".png")

@@ -21,12 +21,17 @@ def process_pca(url, title):
     # Separating out the target
     y = df.loc[:, ['num, the predicted attribute']].values
 
+    for index, item in enumerate(y):
+        if not (item == 0):
+            y[index] = 1
+
     # Standardizing the features
     x = StandardScaler().fit_transform(x)
 
     pca = PCA(n_components=2)
 
     principalComponents = pca.fit_transform(x)
+
 
     principalDf = pd.DataFrame(data=principalComponents
                                , columns=['principal component 1', 'principal component 2'])
