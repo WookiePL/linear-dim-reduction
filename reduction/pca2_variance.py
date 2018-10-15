@@ -3,9 +3,9 @@ import pandas as pd
 from sklearn import preprocessing
 from sklearn.decomposition import PCA
 
-
+# first variance charts method
 def show_intrinsic_dimensions(url, title):
-    # load dataset into Pandas DataFrame
+    # załadowanie zbioru danych do Pandas DataFrame
     df = pd.read_csv(url,
                      names=['age', 'sex', 'cp', 'trestbps', 'chol', 'fbs', 'restecg', 'thalach', 'exang', 'oldpeak',
                             'slope', 'ca', 'thal'])
