@@ -11,6 +11,7 @@ from reduction.utils import save_plot_as_png_file, standardise_classes, plot_dec
 
 
 def process_nmf(url, title):
+    METHOD_NAME='NMF'
     # załadowanie zbioru danych do Pandas DataFrame
     df = pd.read_csv(url,
                      names=['erythema',
@@ -61,16 +62,16 @@ def process_nmf(url, title):
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)
 
     #standaryzacja danych
-    sc = MaxAbsScaler()
-    # sc = StandardScaler()
-    # sc = MinMaxScaler()
-    X_train_std = scale(X_train)
-    X_test_std = scale(X_test)
+    #sc = MaxAbsScaler()
+    # sc = StandardScaler(with_mean = False)
+    sc = MinMaxScaler(feature_range=(0,1))
+    X_train_std = sc.fit_transform(X_train)
+    X_test_std = sc.transform(X_test)
 
 
     nmf = NMF(n_components=2)
-    X_train_pca = nmf.fit_transform(X_train)
-    X_test_pca = nmf.transform(X_test)
+    X_train_pca = nmf.fit_transform(X_train_std)
+    X_test_pca = nmf.transform(X_test_std)
 
     plt.scatter(X_train_pca[:, 0], X_train_pca[:, 1])
     plt.xlabel('PC 1')
@@ -82,7 +83,7 @@ def process_nmf(url, title):
     lr = lr.fit(X_train_pca, y_train)
 
 
-    plot_decision_regions(X_train_pca, y_train, classifier=lr, name="%s training" % title)
+    plot_decision_regions(X_train_pca, y_train, classifier=lr, name="%s training" % title, method=METHOD_NAME)
     plt.xlabel('PC 1')
     plt.ylabel('PC 2')
     plt.title(title + ', 2 component NMF, zbiór treningowy')
@@ -91,7 +92,7 @@ def process_nmf(url, title):
     save_plot_as_png_file(plt)
     plt.show()
 
-    plot_decision_regions(X_test_pca, y_test, classifier=lr, name="%s test" % title)
+    plot_decision_regions(X_test_pca, y_test, classifier=lr, name="%s test" % title, method=METHOD_NAME)
     plt.xlabel('PC 1')
     plt.ylabel('PC 2')
     plt.title(title + ', 2 component NMF, zbiór testowy')
