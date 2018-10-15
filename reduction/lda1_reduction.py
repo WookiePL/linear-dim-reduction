@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from sklearn import metrics
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
@@ -8,6 +9,7 @@ from reduction.utils import plot_decision_regions, save_plot_as_png_file
 
 
 def process_pca(url, title):
+    method_name = 'LDA'
     # załadowanie zbioru danych do Pandas DataFrame
     df = pd.read_csv(url,
                      names=['age', 'sex', 'cp', 'trestbps', 'chol', 'fbs', 'restecg', 'thalach', 'exang', 'oldpeak',
@@ -31,7 +33,7 @@ def process_pca(url, title):
     X_train_std = sc.fit_transform(X_train)
     X_test_std = sc.transform(X_test)
 
-    np.set_printoptions(precision=15)
+    np.set_printoptions(precision=3) #ilosc miejsc po przecinku dla liczb w macierzach
     mean_vectors = []
     for label in range(1, 5):
         mean_vectors.append(np.mean(X_train_std[y_train == label], axis=0))
@@ -145,9 +147,15 @@ def process_pca(url, title):
     lr = LogisticRegression()
     lr = lr.fit(X_train_lda, y_train)
 
-    plot_decision_regions(X_train_lda, y_train, classifier=lr)
+    # REMOVE THIS STUFF:
+    # pred_train = lr.predict(X_train_lda)
+    # print('\nPrediction accuracy for the normal test dataset with PCA')
+    # print('{:.2%}\n'.format(metrics.accuracy_score(y_train, pred_train)))
+
+    plot_decision_regions(X_train_lda, y_train, classifier=lr, name="%s training" % title, method=method_name)
     plt.xlabel('LD 1')
     plt.ylabel('LD 2')
+    plt.title(title + ', 2 component LDA, zbiór treningowy')
     plt.legend(loc='lower left')
     plt.tight_layout()
     save_plot_as_png_file(plt)
@@ -155,9 +163,10 @@ def process_pca(url, title):
 
     X_test_lda = lda.transform(X_test_std)
 
-    plot_decision_regions(X_test_lda, y_test, classifier=lr)
+    plot_decision_regions(X_test_lda, y_test, classifier=lr, name="%s test" % title, method=method_name)
     plt.xlabel('LD 1')
     plt.ylabel('LD 2')
+    plt.title(title + ', 2 component LDA, zbiór testowy')
     plt.legend(loc='lower left')
     plt.tight_layout()
     save_plot_as_png_file(plt)
