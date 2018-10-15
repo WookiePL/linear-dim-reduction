@@ -5,7 +5,7 @@ from sklearn.preprocessing import StandardScaler
 
 
 def process_pca(url, title):
-    # load dataset into Pandas DataFrame
+    # załadowanie zbioru danych do Pandas DataFrame
     df = pd.read_csv(url,
                      names=['age', 'sex', 'cp', 'trestbps', 'chol', 'fbs', 'restecg', 'thalach', 'exang', 'oldpeak',
                             'slope', 'ca', 'thal', 'num, the predicted attribute'])
