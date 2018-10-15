@@ -1,17 +1,15 @@
 import matplotlib.pyplot as plt
 import pandas as pd
-from sklearn.decomposition import PCA, NMF
-from sklearn.preprocessing import StandardScaler, MaxAbsScaler, MinMaxScaler, normalize
-from sklearn.model_selection import train_test_split
-import numpy as np
-from matplotlib.colors import ListedColormap
+from sklearn.decomposition import NMF
 from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
 
 from reduction.utils import save_plot_as_png_file, standardise_classes, plot_decision_regions
 
 
 def process_nmf(url, title):
-    METHOD_NAME='NMF'
+    METHOD_NAME = 'NMF'
 
     # załadowanie zbioru danych do Pandas DataFrame
     df = pd.read_csv(url,
@@ -19,25 +17,25 @@ def process_nmf(url, title):
                             'slope', 'ca', 'thal', 'num, the predicted attribute'])
 
     df = df.replace('?', '0')
-    df.columns = ['age', 'sex', 'cp', 'trestbps', 'chol', 'fbs', 'restecg', 'thalach', 'exang', 'oldpeak', 'slope', 'ca', 'thal', 'num, the predicted attribute']
+    df.columns = ['age', 'sex', 'cp', 'trestbps', 'chol', 'fbs', 'restecg', 'thalach', 'exang', 'oldpeak', 'slope',
+                  'ca', 'thal', 'num, the predicted attribute']
     df.convert_objects(convert_numeric=True)
 
-    #podział na zbiór cech i klasy
+    # podział na zbiór cech i klasy
     X, y = df.iloc[:, :13].values, df.iloc[:, 13].values
 
     y = standardise_classes(y)
 
-    #podział danych na 70% zbiór treningowy, 30% testowy
+    # podział danych na 70% zbiór treningowy, 30% testowy
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)
 
-    #standaryzacja danych
-    #TODO zrobic dobra standatyzacje danych dla NMF
-    #sc = MaxAbsScaler()
-    sc = StandardScaler(with_mean = False)
-    #sc = MinMaxScaler(feature_range=(0, 1))
+    # standaryzacja danych
+    # TODO zrobic dobra standatyzacje danych dla NMF
+    # sc = MaxAbsScaler()
+    sc = StandardScaler(with_mean=False)
+    # sc = MinMaxScaler(feature_range=(0, 1))
     X_train_std = sc.fit_transform(X_train)
     X_test_std = sc.transform(X_test)
-
 
     nmf = NMF(n_components=2)
     X_train_pca = nmf.fit_transform(X_train_std)
@@ -78,7 +76,6 @@ def process_nmf(url, title):
     lr = LogisticRegression()
     lr = lr.fit(X_train_pca, y_train)
 
-
     plot_decision_regions(X_train_pca, y_train, classifier=lr, name="%s test" % title, method=METHOD_NAME)
     plt.xlabel('PC 1')
     plt.ylabel('PC 2')
@@ -99,13 +96,12 @@ def process_nmf(url, title):
     pass
 
 
-
 url1 = "D:\\mgr\\heart-disease\\processed.switzerland.data"
 url2 = "D:\\mgr\\heart-disease\\processed.cleveland.data"
 url3 = "D:\\mgr\\heart-disease\\processed.hungarian.data"
 url4 = "D:\\mgr\\heart-disease\\processed.va.data"
 
-#process_nmf(url1, 'Switzerland')
+# process_nmf(url1, 'Switzerland')
 process_nmf(url2, 'Cleveland')
-#process_pca(url3, 'Hungarian')
-#process_pca(url4, 'Long Beach, CA')
+# process_pca(url3, 'Hungarian')
+# process_pca(url4, 'Long Beach, CA')
