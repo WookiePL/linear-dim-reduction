@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 url = "D:\\mgr\\iris\\iris.data"
 
-# load dataset into Pandas DataFrame
+# załadowanie zbioru danych do Pandas DataFrame
 df = pd.read_csv(url, names=['sepal length','sepal width','petal length','petal width','target'])
 
 
