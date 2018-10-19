@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import confusion_matrix, f1_score, accuracy_score, cohen_kappa_score
+from sklearn.metrics import confusion_matrix, f1_score, accuracy_score, cohen_kappa_score, classification_report
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 
@@ -30,6 +30,17 @@ def count_print_confusion_matrix(X_train, X_test, y_train, y_test, classifier):
     print('Wynik F1: %.4f' % f1_score(y_true=y_test, y_pred=y_pred))
     print('Dokładność: %.4f' % accuracy_score(y_true=y_test, y_pred=y_pred))
     print('Cohen’s kappa: %.4f' % cohen_kappa_score(y_test, y_pred))
+
+    #https://stackoverflow.com/questions/33275461/specificity-in-scikit-learn
+    tn, fp, fn, tp = conf_matrix.ravel()
+    specificity = tn / (tn + fp)
+    print('Specificity: %.4f' % specificity)
+
+    target_names = ['class 0', 'class 1']
+    print(classification_report(y_true=y_test, y_pred=y_pred,  target_names=target_names))
+    pass
+
+
 
 # def count_f1(X_train, X_test, y_train, y_test):
 #     print('wynik F1: %s' % f1_score(y_true=y_test, y_pred=y_pred))
