@@ -128,7 +128,10 @@ def process_pca(url, title):
     save_plot_as_png_file(plt)
     plt.show()
 
-    count_print_confusion_matrix(X_train, X_test, y_train, y_test, lr)
+    #TODO: dla NIEZREDUKOWANEGO: count_print_confusion_matrix(X_train, X_test, y_train, y_test, lr)
+
+    #TO JEST DLA ZREDUKOWANEGO BO WYKORZYSTUJE zbiór_pca
+    count_print_confusion_matrix(X_train_pca, X_test_pca, y_train, y_test, lr)
     pass
 
 

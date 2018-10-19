@@ -1,14 +1,18 @@
 import matplotlib.pyplot as plt
-from sklearn.metrics import confusion_matrix
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import confusion_matrix, f1_score, accuracy_score, cohen_kappa_score
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
-from sklearn.svm import SVC
 
 
 def count_print_confusion_matrix(X_train, X_test, y_train, y_test, classifier):
-    pipe_svc = Pipeline([('scl', StandardScaler()), ('clf', SVC(random_state=1))])
-    pipe_svc.fit(X_train, y_train)
-    y_pred = pipe_svc.predict(X_test)
+
+    # TO JEST DLA NIEZREDUKOWANEGO:
+    # pipe_svc = Pipeline([('scl', StandardScaler()), ('clf', LogisticRegression())])
+    # pipe_svc.fit(X_train, y_train)
+
+    #TO JEST DLA ZREDUKOWANEGO
+    y_pred = classifier.predict(X_test)
     conf_matrix = confusion_matrix(y_true=y_test, y_pred=y_pred)
     print(conf_matrix)
 
@@ -22,3 +26,10 @@ def count_print_confusion_matrix(X_train, X_test, y_train, y_test, classifier):
     plt.xlabel('przewidywana klasa')
     plt.ylabel('rzeczywista klasa')
     plt.show()
+
+    print('Wynik F1: %.4f' % f1_score(y_true=y_test, y_pred=y_pred))
+    print('Dokładność: %.4f' % accuracy_score(y_true=y_test, y_pred=y_pred))
+    print('Cohen’s kappa: %.4f' % cohen_kappa_score(y_test, y_pred))
+
+# def count_f1(X_train, X_test, y_train, y_test):
+#     print('wynik F1: %s' % f1_score(y_true=y_test, y_pred=y_pred))
