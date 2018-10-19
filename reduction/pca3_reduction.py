@@ -8,6 +8,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
+from reduction.results_metrics import count_print_confusion_matrix
 from reduction.utils import save_plot_as_png_file, standardise_classes, plot_decision_regions
 
 
@@ -126,6 +127,8 @@ def process_pca(url, title):
     plt.tight_layout()
     save_plot_as_png_file(plt)
     plt.show()
+
+    count_print_confusion_matrix(X_train, X_test, y_train, y_test, lr)
     pass
 
 
@@ -134,7 +137,7 @@ url2 = "D:\\mgr\\heart-disease\\processed.cleveland.data"
 url3 = "D:\\mgr\\heart-disease\\processed.hungarian.data"
 url4 = "D:\\mgr\\heart-disease\\processed.va.data"
 
-process_pca(url1, 'Switzerland')
+#process_pca(url1, 'Switzerland')
 process_pca(url2, 'Cleveland')
-process_pca(url3, 'Hungarian')
-process_pca(url4, 'Long Beach, CA')
+#process_pca(url3, 'Hungarian')
+#process_pca(url4, 'Long Beach, CA')
