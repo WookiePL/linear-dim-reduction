@@ -9,10 +9,12 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
 from reduction.results_metrics import count_print_confusion_matrix
-from reduction.utils import save_plot_as_png_file, standardise_classes, plot_decision_regions
+from reduction.utils import save_plot_as_png_file, standardise_classes, plot_decision_regions, ignore_all_warnings
 
 
-def process_pca(url, title):
+def process_pca(url, title, n_components):
+    ignore_all_warnings()
+    print('{}, {} component PCA'.format(title, n_components))
     # załadowanie zbioru danych do Pandas DataFrame
     df = pd.read_csv(url,
                      names=['age', 'sex', 'cp', 'trestbps', 'chol', 'fbs', 'restecg', 'thalach', 'exang', 'oldpeak',
@@ -98,35 +100,36 @@ def process_pca(url, title):
     plt.xlabel('Principal components')
     plt.show()
 
-    pca = PCA(n_components=2)
+    pca = PCA(n_components=n_components)
     X_train_pca = pca.fit_transform(X_train_std)
     X_test_pca = pca.transform(X_test_std)
-
-    plt.scatter(X_train_pca[:, 0], X_train_pca[:, 1])
-    plt.xlabel('PC 1')
-    plt.ylabel('PC 2')
-    plt.show()
 
     lr = LogisticRegression()
     lr = lr.fit(X_train_pca, y_train)
 
-    plot_decision_regions(X_train_pca, y_train, classifier=lr, name="%s training" % title)
-    plt.xlabel('PC 1')
-    plt.ylabel('PC 2')
-    plt.title(title + ', 2 component PCA, zbiór treningowy')
-    plt.legend(loc='lower left')
-    plt.tight_layout()
-    save_plot_as_png_file(plt)
-    plt.show()
+    if n_components == 2: # jesli 2 wymiary to mozna narysowac wykres liniowy
+        plt.scatter(X_train_pca[:, 0], X_train_pca[:, 1])
+        plt.xlabel('PC 1')
+        plt.ylabel('PC 2')
+        plt.show()
 
-    plot_decision_regions(X_test_pca, y_test, classifier=lr, name="%s test" % title)
-    plt.xlabel('PC 1')
-    plt.ylabel('PC 2')
-    plt.title(title + ', 2 component PCA, zbiór testowy')
-    plt.legend(loc='lower left')
-    plt.tight_layout()
-    save_plot_as_png_file(plt)
-    plt.show()
+        plot_decision_regions(X_train_pca, y_train, classifier=lr, name="%s training" % title)
+        plt.xlabel('PC 1')
+        plt.ylabel('PC 2')
+        plt.title(title + ', 2 component PCA, zbiór treningowy')
+        plt.legend(loc='lower left')
+        plt.tight_layout()
+        save_plot_as_png_file(plt)
+        plt.show()
+
+        plot_decision_regions(X_test_pca, y_test, classifier=lr, name="%s test" % title)
+        plt.xlabel('PC 1')
+        plt.ylabel('PC 2')
+        plt.title(title + ', 2 component PCA, zbiór testowy')
+        plt.legend(loc='lower left')
+        plt.tight_layout()
+        save_plot_as_png_file(plt)
+        plt.show()
 
     #TODO: dla NIEZREDUKOWANEGO: count_print_confusion_matrix(X_train, X_test, y_train, y_test, lr)
 
@@ -141,6 +144,6 @@ url3 = "D:\\mgr\\heart-disease\\processed.hungarian.data"
 url4 = "D:\\mgr\\heart-disease\\processed.va.data"
 
 #process_pca(url1, 'Switzerland')
-process_pca(url2, 'Cleveland')
+process_pca(url2, 'Cleveland', n_components=2)
 #process_pca(url3, 'Hungarian')
 #process_pca(url4, 'Long Beach, CA')
