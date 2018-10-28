@@ -5,6 +5,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
+from reduction.results_metrics import count_print_confusion_matrix
 from reduction.utils import save_plot_as_png_file, standardise_classes, plot_decision_regions
 
 
@@ -38,10 +39,10 @@ def process_nmf(url, title):
     X_test_std = sc.transform(X_test)
 
     nmf = NMF(n_components=2)
-    X_train_pca = nmf.fit_transform(X_train_std)
-    X_test_pca = nmf.transform(X_test_std)
+    X_train_nmf = nmf.fit_transform(X_train_std)
+    X_test_nmf = nmf.transform(X_test_std)
 
-    plt.scatter(X_train_pca[:, 0], X_train_pca[:, 1])
+    plt.scatter(X_train_nmf[:, 0], X_train_nmf[:, 1])
     plt.xlabel('PC 1')
     plt.ylabel('PC 2')
     plt.show()
@@ -74,9 +75,9 @@ def process_nmf(url, title):
     #                     label=cl)
 
     lr = LogisticRegression()
-    lr = lr.fit(X_train_pca, y_train)
+    lr = lr.fit(X_train_nmf, y_train)
 
-    plot_decision_regions(X_train_pca, y_train, classifier=lr, name="%s test" % title, method=METHOD_NAME)
+    plot_decision_regions(X_train_nmf, y_train, classifier=lr, name="%s test" % title, method=METHOD_NAME)
     plt.xlabel('PC 1')
     plt.ylabel('PC 2')
     plt.title(title + ', 2 component NMF, zbiór treningowy')
@@ -85,7 +86,7 @@ def process_nmf(url, title):
     save_plot_as_png_file(plt)
     plt.show()
 
-    plot_decision_regions(X_test_pca, y_test, classifier=lr, name="%s trening" % title, method=METHOD_NAME)
+    plot_decision_regions(X_test_nmf, y_test, classifier=lr, name="%s trening" % title, method=METHOD_NAME)
     plt.xlabel('PC 1')
     plt.ylabel('PC 2')
     plt.title(title + ', 2 component NMF, zbiór testowy')
@@ -93,6 +94,9 @@ def process_nmf(url, title):
     plt.tight_layout()
     save_plot_as_png_file(plt)
     plt.show()
+
+
+    count_print_confusion_matrix(X_train_nmf, X_test_nmf, y_train, y_test, lr)
     pass
 
 
