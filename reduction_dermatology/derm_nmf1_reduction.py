@@ -64,7 +64,7 @@ def process_nmf(url, title):
     #standaryzacja danych
     #sc = MaxAbsScaler()
     # sc = StandardScaler(with_mean = False)
-    sc = MinMaxScaler(feature_range=(0,1))
+    sc = MinMaxScaler(feature_range=(0, 3))
     X_train_std = sc.fit_transform(X_train)
     X_test_std = sc.transform(X_test)
 
