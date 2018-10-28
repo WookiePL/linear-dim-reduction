@@ -8,7 +8,7 @@ from reduction_dermatology.derm_nmf1_reduction import process_nmf
 from reduction_dermatology.derm_pca3_reduction import process_pca
 
 
-class TestDermatologyPCA(unittest.TestCase):
+class TestDermatologyReduction(unittest.TestCase):
     def test_process_pca(self):
         # warnings.filterwarnings("ignore")
         warnings.simplefilter("ignore")
