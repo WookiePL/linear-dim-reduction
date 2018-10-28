@@ -1,8 +1,12 @@
+import warnings
+
 import pandas as pd
+from sklearn.exceptions import DataConversionWarning
 from sklearn.model_selection import train_test_split
 
 
 def preprocess_dermatology_data(url):
+    #warnings.simplefilter(action='ignore', category=DataConversionWarning)
     # załadowanie zbioru danych do Pandas DataFrame
     df = pd.read_csv(url,
                      names=['erythema',
@@ -51,3 +55,9 @@ def preprocess_dermatology_data(url):
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)
 
     return X, y, X_train, X_test, y_train, y_test
+
+
+def ignore_all_warnings():
+    warnings.simplefilter("ignore")
+    warnings.simplefilter(action='ignore', category=FutureWarning)
+    warnings.simplefilter(action='ignore', category=DataConversionWarning)
