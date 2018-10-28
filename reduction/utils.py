@@ -1,4 +1,5 @@
 import time
+import warnings
 from datetime import datetime
 
 import matplotlib.pyplot as plt
@@ -6,6 +7,7 @@ import numpy as np
 import pandas as pd
 from matplotlib.colors import ListedColormap
 from sklearn import metrics
+from sklearn.exceptions import DataConversionWarning
 from sklearn.model_selection import train_test_split
 
 
@@ -103,3 +105,7 @@ def preprocess_heart_disease_data(url):
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)
 
     return X, y, X_train, X_test, y_train, y_test
+
+
+def ignore_all_warnings():
+    warnings.simplefilter(action='ignore', category=DataConversionWarning)
