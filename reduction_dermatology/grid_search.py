@@ -1,12 +1,14 @@
 import multiprocessing
+import warnings
 
 from joblib import Parallel, delayed
+from sklearn.exceptions import DataConversionWarning
 from sklearn.model_selection import GridSearchCV
 from sklearn.pipeline import make_pipeline, Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
 
-from reduction_dermatology.derm_utils import preprocess_dermatology_data
+from reduction_dermatology.derm_utils import preprocess_dermatology_data, ignore_all_warnings
 
 
 def func():
@@ -14,6 +16,8 @@ def func():
 
 
 def grid_search(url):
+    warnings.simplefilter(action='ignore', category=DataConversionWarning)
+
     X, y, X_train, X_test, y_train, y_test = preprocess_dermatology_data(url)
     pipe_svc = Pipeline([('scl', StandardScaler()),
                          ('clf', SVC(random_state=1))])
@@ -36,11 +40,13 @@ def grid_search(url):
 
 
 def parallel_func():
+    warnings.simplefilter(action='ignore', category=DataConversionWarning)
     grid_search(url="D:\\mgr\\dermatology\\dermatology.data")
     return Parallel(n_jobs=2)(delayed(func)() for _ in range(2))
 
 
 if __name__ == '__main__':
+    ignore_all_warnings()
     print(Parallel(n_jobs=2)(parallel_func() for _ in range(3)))
 
 
