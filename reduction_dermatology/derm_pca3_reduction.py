@@ -10,9 +10,13 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
 
 from reduction.utils import save_plot_as_png_file, standardise_classes, plot_decision_regions, plot_colors
+from reduction_dermatology.derm_utils import ignore_all_warnings
+from reduction_dermatology.results_metrics import count_print_confusion_matrix
 
 
-def process_pca(url, title):
+def process_pca(url, title, n_components):
+    ignore_all_warnings()
+    print('{}, {} component PCA'.format(title, n_components))
     # załadowanie zbioru danych do Pandas DataFrame
     df = pd.read_csv(url,
                      names=['erythema',
@@ -127,15 +131,9 @@ def process_pca(url, title):
     plt.xlabel('Principal components')
     plt.show()
 
-    pca = PCA(n_components=2)
+    pca = PCA(n_components=n_components)
     X_train_pca = pca.fit_transform(X_train_std)
     X_test_pca = pca.transform(X_test_std)
-
-    plt.scatter(X_train_pca[:, 0], X_train_pca[:, 1])
-    plt.xlabel('PC 1')
-    plt.ylabel('PC 2')
-    plt.show()
-
 
     lr = LogisticRegression()
     lr = lr.fit(X_train_pca, y_train)
@@ -144,27 +142,35 @@ def process_pca(url, title):
     svm = SVC(kernel='rbf', random_state=0, gamma=0.7, C=1.0)
     svm.fit(X_train_pca, y_train)
 
+    if n_components == 2:
+        plt.scatter(X_train_pca[:, 0], X_train_pca[:, 1])
+        plt.xlabel('PC 1')
+        plt.ylabel('PC 2')
+        plt.show()
 
-    plot_decision_regions(X_train_pca, y_train, classifier=lr, name="%s training" % title)
-    plt.xlabel('PC 1')
-    plt.ylabel('PC 2')
-    plt.title(title + ', 2 component PCA, zbiór treningowy')
-    plt.legend(loc='upper left')
-    plt.tight_layout()
-    save_plot_as_png_file(plt)
-    plt.show()
+        plot_decision_regions(X_train_pca, y_train, classifier=lr, name="%s training" % title)
+        plt.xlabel('PC 1')
+        plt.ylabel('PC 2')
+        plt.title(title + ', 2 component PCA, zbiór treningowy')
+        plt.legend(loc='upper left')
+        plt.tight_layout()
+        save_plot_as_png_file(plt)
+        plt.show()
 
-    plot_decision_regions(X_test_pca, y_test, classifier=lr, name="%s test" % title)
-    plt.xlabel('PC 1')
-    plt.ylabel('PC 2')
-    plt.title(title + ', 2 component PCA, zbiór testowy')
-    plt.legend(loc='upper left')
-    plt.tight_layout()
-    save_plot_as_png_file(plt)
-    plt.show()
+        plot_decision_regions(X_test_pca, y_test, classifier=lr, name="%s test" % title)
+        plt.xlabel('PC 1')
+        plt.ylabel('PC 2')
+        plt.title(title + ', 2 component PCA, zbiór testowy')
+        plt.legend(loc='upper left')
+        plt.tight_layout()
+        save_plot_as_png_file(plt)
+        plt.show()
+
+
+    count_print_confusion_matrix(X_train_pca, X_test_pca, y_train, y_test, lr)
     pass
 
 
 url1 = "D:\\mgr\\dermatology\\dermatology.data"
 
-process_pca(url1, 'Dermatology')
+process_pca(url1, 'Dermatology', 2)
