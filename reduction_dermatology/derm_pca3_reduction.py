@@ -1,3 +1,6 @@
+import os
+from typing import Optional
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -12,9 +15,12 @@ from sklearn.svm import SVC
 from reduction.utils import save_plot_as_png_file, standardise_classes, plot_decision_regions, plot_colors
 from reduction_dermatology.derm_utils import ignore_all_warnings
 from reduction_dermatology.results_metrics import count_print_confusion_matrix
+from report_model.input_params import InputParams
 
 
-def process_pca(url, title, n_components):
+def process_pca(url, title, n_components, **kwargs):
+    input_params = InputParams(os.path.basename(__file__), url, title, n_components)
+
     ignore_all_warnings()
     print('{}, {} component PCA'.format(title, n_components))
     # załadowanie zbioru danych do Pandas DataFrame
@@ -142,35 +148,45 @@ def process_pca(url, title, n_components):
     svm = SVC(kernel='rbf', random_state=0, gamma=0.7, C=1.0)
     svm.fit(X_train_pca, y_train)
 
+    training_png_url = ''
+    test_png_url = ''
+
     if n_components == 2:
         plt.scatter(X_train_pca[:, 0], X_train_pca[:, 1])
         plt.xlabel('PC 1')
         plt.ylabel('PC 2')
         plt.show()
 
-        plot_decision_regions(X_train_pca, y_train, classifier=lr, name="%s training" % title)
+        plot_decision_regions(X_train_pca, y_train, classifier=svm, name="%s training" % title)
         plt.xlabel('PC 1')
         plt.ylabel('PC 2')
         plt.title(title + ', 2 component PCA, zbiór treningowy')
         plt.legend(loc='upper left')
         plt.tight_layout()
-        save_plot_as_png_file(plt)
+        training_png_url = save_plot_as_png_file(plt)
         plt.show()
 
-        plot_decision_regions(X_test_pca, y_test, classifier=lr, name="%s test" % title)
+        plot_decision_regions(X_test_pca, y_test, classifier=svm, name="%s test" % title)
         plt.xlabel('PC 1')
         plt.ylabel('PC 2')
         plt.title(title + ', 2 component PCA, zbiór testowy')
         plt.legend(loc='upper left')
         plt.tight_layout()
-        save_plot_as_png_file(plt)
+        test_png_url= save_plot_as_png_file(plt)
         plt.show()
 
-
-    count_print_confusion_matrix(X_train_pca, X_test_pca, y_train, y_test, lr)
+    count_print_confusion_matrix(X_train_pca,
+                                 X_test_pca,
+                                 y_train,
+                                 y_test,
+                                 lr,
+                                 run_id=kwargs.get('run_id', '0'),
+                                 input_params=input_params,
+                                 training_png_url=training_png_url,
+                                 test_png_url=test_png_url)
     pass
 
 
 url1 = "D:\\mgr\\dermatology\\dermatology.data"
 
-process_pca(url1, 'Dermatology', 2)
+process_pca(url1, 'Dermatology', 4)

@@ -7,7 +7,10 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
 
-def process_lda(url, title):
+from reduction_dermatology.results_metrics import count_print_confusion_matrix
+
+
+def process_lda(url, title, n_components):
     method_name = 'LDA'
     X, y, X_train, X_test, y_train, y_test = preprocess_dermatology_data(url)
 
@@ -123,36 +126,38 @@ def process_lda(url, title):
 
     from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 
-    lda = LDA(n_components=2)
+    lda = LDA(n_components=n_components)
     X_train_lda = lda.fit_transform(X_train_std, y_train)
 
     from sklearn.linear_model import LogisticRegression
     lr = LogisticRegression()
     lr = lr.fit(X_train_lda, y_train)
-
-    plot_decision_regions(X_train_lda, y_train, classifier=lr, name="%s training" % title, method=method_name)
-    plt.xlabel('LD 1')
-    plt.ylabel('LD 2')
-    plt.title(title + ', 2 component LDA, zbiór treningowy')
-    plt.legend(loc='lower left')
-    plt.tight_layout()
-    save_plot_as_png_file(plt)
-    plt.show()
-
     X_test_lda = lda.transform(X_test_std)
 
-    plot_decision_regions(X_test_lda, y_test, classifier=lr, name="%s test" % title, method=method_name)
-    plt.xlabel('LD 1')
-    plt.ylabel('LD 2')
-    plt.title(title + ', 2 component LDA, zbiór testowy')
-    plt.legend(loc='lower left')
-    plt.tight_layout()
-    save_plot_as_png_file(plt)
-    plt.show()
+    if n_components == 2:
+        plot_decision_regions(X_train_lda, y_train, classifier=lr, name="%s training" % title, method=method_name)
+        plt.xlabel('LD 1')
+        plt.ylabel('LD 2')
+        plt.title(title + ', 2 component LDA, zbiór treningowy')
+        plt.legend(loc='lower left')
+        plt.tight_layout()
+        save_plot_as_png_file(plt)
+        plt.show()
 
+
+        plot_decision_regions(X_test_lda, y_test, classifier=lr, name="%s test" % title, method=method_name)
+        plt.xlabel('LD 1')
+        plt.ylabel('LD 2')
+        plt.title(title + ', 2 component LDA, zbiór testowy')
+        plt.legend(loc='lower left')
+        plt.tight_layout()
+        save_plot_as_png_file(plt)
+        plt.show()
+
+    count_print_confusion_matrix(X_train_lda, X_test_lda, y_train, y_test, lr)
     pass
 
 
 url1 = "D:\\mgr\\dermatology\\dermatology.data"
 
-process_lda(url1, 'Dermatology')
+#process_lda(url1, 'Dermatology', n_components=2)
