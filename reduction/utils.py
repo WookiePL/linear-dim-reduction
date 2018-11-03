@@ -23,8 +23,22 @@ def save_plot_as_png_file(plt):
     plt2 = plt
     date = str(datetime.now().strftime('%Y-%m-%d %H%M%S'))
 
-    plt2.savefig(FOLDER_NAME + date + ".png")
+    name = FOLDER_NAME + date + ".png"
+    plt2.savefig(name)
     time.sleep(1)
+    return name
+
+
+def get_name_for_json_file():
+    FOLDER_NAME = "../report_jsons/"
+    date = str(datetime.now().strftime('%Y-%m-%d %H%M%S'))
+
+    name = FOLDER_NAME + date + " output_report.json"
+    return name
+
+
+def get_run_id():
+    return str(datetime.now().strftime('%Y-%m-%d %H%M%S'))
 
 
 def standardise_classes(y):
