@@ -18,16 +18,7 @@ def count_print_confusion_matrix(X_train, X_test, y_train, y_test, classifier):
     conf_matrix = confusion_matrix(y_true=y_test, y_pred=y_pred)
     print(conf_matrix)
 
-    fig, ax = plt.subplots(figsize=(2.5, 2.5))
-    ax.matshow(conf_matrix, cmap=plt.cm.Greys, alpha=0.3)
-    for i in range(conf_matrix.shape[0]):
-        for j in range(conf_matrix.shape[1]):
-            ax.text(x=j, y=i,
-                    s=conf_matrix[i, j],
-                    va='center', ha='center')
-    plt.xlabel('przewidywana klasa')
-    plt.ylabel('rzeczywista klasa')
-    plt.show()
+    plot_confusion_matrix(conf_matrix)
 
     print('Wynik F1: %.4f' % f1_score(y_true=y_test, y_pred=y_pred))
     print('Accuracy: %.4f' % accuracy_score(y_true=y_test, y_pred=y_pred))
@@ -42,6 +33,19 @@ def count_print_confusion_matrix(X_train, X_test, y_train, y_test, classifier):
     target_names = ['class 0', 'class 1']
     print(classification_report(y_true=y_test, y_pred=y_pred,  target_names=target_names))
     pass
+
+
+def plot_confusion_matrix(conf_matrix):
+    fig, ax = plt.subplots(figsize=(2.5, 2.5))
+    ax.matshow(conf_matrix, cmap=plt.cm.Greys, alpha=0.3)
+    for i in range(conf_matrix.shape[0]):
+        for j in range(conf_matrix.shape[1]):
+            ax.text(x=j, y=i,
+                    s=conf_matrix[i, j],
+                    va='center', ha='center')
+    plt.xlabel('przewidywana klasa')
+    plt.ylabel('rzeczywista klasa')
+    plt.show()
 
 
 def desc_confusion_matrix():
