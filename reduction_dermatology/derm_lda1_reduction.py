@@ -1,3 +1,5 @@
+import os
+
 from reduction.utils import plot_decision_regions, save_plot_as_png_file
 from reduction_dermatology.derm_utils import preprocess_dermatology_data
 import numpy as np
@@ -8,10 +10,14 @@ from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
 
 from reduction_dermatology.results_metrics import count_print_confusion_matrix
+from report_model.input_params import InputParams
 
 
-def process_lda(url, title, n_components):
+def process_lda(url, title, n_components, **kwargs):
+    input_params = InputParams(os.path.basename(__file__), url, title, n_components)
+
     method_name = 'LDA'
+
     X, y, X_train, X_test, y_train, y_test = preprocess_dermatology_data(url)
 
 
@@ -134,6 +140,9 @@ def process_lda(url, title, n_components):
     lr = lr.fit(X_train_lda, y_train)
     X_test_lda = lda.transform(X_test_std)
 
+    training_png_url = ''
+    test_png_url = ''
+
     if n_components == 2:
         plot_decision_regions(X_train_lda, y_train, classifier=lr, name="%s training" % title, method=method_name)
         plt.xlabel('LD 1')
@@ -141,7 +150,7 @@ def process_lda(url, title, n_components):
         plt.title(title + ', 2 component LDA, zbiór treningowy')
         plt.legend(loc='lower left')
         plt.tight_layout()
-        save_plot_as_png_file(plt)
+        training_png_url = save_plot_as_png_file(plt)
         plt.show()
 
 
@@ -151,10 +160,14 @@ def process_lda(url, title, n_components):
         plt.title(title + ', 2 component LDA, zbiór testowy')
         plt.legend(loc='lower left')
         plt.tight_layout()
-        save_plot_as_png_file(plt)
+        test_png_url = save_plot_as_png_file(plt)
         plt.show()
 
-    count_print_confusion_matrix(X_train_lda, X_test_lda, y_train, y_test, lr)
+    count_print_confusion_matrix(X_train_lda, X_test_lda, y_train, y_test, lr,
+                                 run_id=kwargs.get('run_id', '0'),
+                                 input_params=input_params,
+                                 training_png_url=training_png_url,
+                                 test_png_url=test_png_url)
     pass
 
 

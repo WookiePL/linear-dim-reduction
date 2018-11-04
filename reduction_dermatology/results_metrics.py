@@ -13,7 +13,7 @@ from report_model.output_report import OutputReport
 
 
 def count_print_confusion_matrix(X_train, X_test, y_train, y_test, classifier, **kwargs):
-    target_names = ['class 1', 'class 2', 'class 3', 'class 4', 'class 5', 'class 6']
+    target_names = ['klasa 1', 'klasa 2', 'klasa 3', 'klasa 4', 'klasa 5', 'klasa 6']
     # TO JEST DLA NIEZREDUKOWANEGO:
     # pipe_svc = Pipeline([('scl', StandardScaler()), ('clf', LogisticRegression())])
     # pipe_svc.fit(X_train, y_train)
@@ -24,16 +24,6 @@ def count_print_confusion_matrix(X_train, X_test, y_train, y_test, classifier, *
     print(conf_matrix)
     plot_confusion_matrix(conf_matrix, target_names, title='Macierz pomyłek')
 
-    # fig, ax = plt.subplots(figsize=(2.5, 2.5))
-    # ax.matshow(conf_matrix, cmap=plt.cm.Greys, alpha=0.3)
-    # for i in range(conf_matrix.shape[0]):
-    #     for j in range(conf_matrix.shape[1]):
-    #         ax.text(x=j, y=i,
-    #                 s=conf_matrix[i, j],
-    #                 va='center', ha='center')
-    # plt.xlabel('przewidywana klasa')
-    # plt.ylabel('rzeczywista klasa')
-    # plt.show()
     _f1_score = f1_score(y_true=y_test, y_pred=y_pred, average='micro')
     _error = mean_absolute_error(y_true=y_test, y_pred=y_pred)
     _accuracy_score = accuracy_score(y_true=y_test, y_pred=y_pred)

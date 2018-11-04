@@ -9,9 +9,13 @@ from sklearn.linear_model import LogisticRegression
 
 from reduction.utils import save_plot_as_png_file, standardise_classes, plot_decision_regions
 from reduction_dermatology.results_metrics import count_print_confusion_matrix
+from report_model.input_params import InputParams
+import os
 
 
-def process_nmf(url, title, n_components):
+def process_nmf(url, title, n_components, **kwargs):
+    input_params = InputParams(os.path.basename(__file__), url, title, n_components)
+
     METHOD_NAME='NMF'
     # załadowanie zbioru danych do Pandas DataFrame
     df = pd.read_csv(url,
@@ -79,9 +83,11 @@ def process_nmf(url, title, n_components):
     plt.ylabel('PC 2')
     plt.show()
 
-
     lr = LogisticRegression()
     lr = lr.fit(X_train_nmf, y_train)
+
+    training_png_url = ''
+    test_png_url = ''
 
     if n_components == 2:
         plot_decision_regions(X_train_nmf, y_train, classifier=lr, name="%s training" % title, method=METHOD_NAME)
@@ -102,7 +108,11 @@ def process_nmf(url, title, n_components):
         save_plot_as_png_file(plt)
         plt.show()
 
-    count_print_confusion_matrix(X_train_nmf, X_test_nmf, y_train, y_test, lr)
+    count_print_confusion_matrix(X_train_nmf, X_test_nmf, y_train, y_test, lr,
+                                 run_id=kwargs.get('run_id', '0'),
+                                 input_params=input_params,
+                                 training_png_url=training_png_url,
+                                 test_png_url=test_png_url)
     pass
 
 

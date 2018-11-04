@@ -14,7 +14,7 @@ from reduction_dermatology.results_metrics import count_print_confusion_matrix
 from report_model.input_params import InputParams
 
 
-def process_without_reduction(url, title):
+def process_without_reduction(url, title, **kwargs):
     input_params = InputParams(os.path.basename(__file__), url, title, None)
     method_name = 'Bez redukcji wymiarowości'
     X, y, X_train, X_test, y_train, y_test = preprocess_dermatology_data(url)
@@ -30,6 +30,7 @@ def process_without_reduction(url, title):
     lr = lr.fit(X_train_std, y_train)
 
     count_print_confusion_matrix(X_train_std, X_test_std, y_train, y_test, lr,
+                                run_id=kwargs.get('run_id', '0'),
                                 input_params=input_params)
     pass
 
