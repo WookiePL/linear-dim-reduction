@@ -9,7 +9,7 @@ from reduction.results_metrics import count_print_confusion_matrix
 from reduction.utils import save_plot_as_png_file, standardise_classes, plot_decision_regions
 
 
-def process_nmf(url, title):
+def process_nmf(url, title, n_components):
     METHOD_NAME = 'NMF'
 
     # załadowanie zbioru danych do Pandas DataFrame
@@ -105,7 +105,7 @@ url2 = "D:\\mgr\\heart-disease\\processed.cleveland.data"
 url3 = "D:\\mgr\\heart-disease\\processed.hungarian.data"
 url4 = "D:\\mgr\\heart-disease\\processed.va.data"
 
-# process_nmf(url1, 'Switzerland')
-process_nmf(url2, 'Cleveland')
-# process_pca(url3, 'Hungarian')
-# process_pca(url4, 'Long Beach, CA')
+# process_nmf(url1, 'Switzerland', 2)
+process_nmf(url2, 'Cleveland', 2)
+# process_pca(url3, 'Hungarian', 2)
+# process_pca(url4, 'Long Beach, CA', 2)

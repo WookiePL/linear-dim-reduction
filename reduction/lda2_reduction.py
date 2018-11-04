@@ -11,7 +11,7 @@ from reduction.results_metrics import count_print_confusion_matrix
 from reduction.utils import plot_decision_regions, save_plot_as_png_file, standardise_classes
 
 
-def process_lda(url, title):
+def process_lda(url, title, n_components):
     METHOD_NAME = 'LDA'
     # załadowanie zbioru danych do Pandas DataFrame
     df = pd.read_csv(url,
@@ -74,7 +74,7 @@ url2 = "D:\\mgr\\heart-disease\\processed.cleveland.data"
 url3 = "D:\\mgr\\heart-disease\\processed.hungarian.data"
 url4 = "D:\\mgr\\heart-disease\\processed.va.data"
 
-#process_lda(url1, 'Switzerland')
-process_lda(url2, 'Cleveland')
-#process_lda(url3, 'Hungarian')
-#process_lda(url4, 'Long Beach, CA')
+#process_lda(url1, 'Switzerland', 2)
+process_lda(url2, 'Cleveland', 2)
+#process_lda(url3, 'Hungarian', 2)
+#process_lda(url4, 'Long Beach, CA', 2)
