@@ -7,6 +7,7 @@ import numpy as np
 from matplotlib.colors import ListedColormap
 from sklearn.linear_model import LogisticRegression
 
+from reduction.classifier_factory import ClassifierFactory
 from reduction.utils import save_plot_as_png_file, standardise_classes, plot_decision_regions
 from reduction_dermatology.results_metrics import count_print_confusion_matrix
 from report_model.input_params import InputParams
@@ -14,7 +15,7 @@ import os
 
 
 def process_nmf(url, title, n_components, **kwargs):
-    input_params = InputParams(os.path.basename(__file__), url, title, n_components)
+    input_params = InputParams(os.path.basename(__file__), url, title, n_components, kwargs.get('classifier', 'lr'))
 
     METHOD_NAME='NMF'
     # załadowanie zbioru danych do Pandas DataFrame
@@ -73,6 +74,28 @@ def process_nmf(url, title, n_components, **kwargs):
     X_train_std = sc.fit_transform(X_train)
     X_test_std = sc.transform(X_test)
 
+    # otrzymywanie wartości własnych (eigenvalues)
+    cov_mat = np.cov(X_train_std.T)
+    eigen_vals, eigen_vecs = np.linalg.eig(cov_mat)
+    print('Eigenvalues \n%s' % eigen_vals)
+
+    # suma wariancji
+    total = sum(eigen_vals)
+    # explained variances
+    var_exp = [(i / total) for i in sorted(eigen_vals, reverse=True)]
+    # cumulative sum of explained variances
+    cum_var_exp = np.cumsum(var_exp)
+
+    plt.bar(range(1, 35), var_exp, alpha=0.5, align='center',
+            label='individual explained variance')
+    plt.step(range(1, 35), cum_var_exp, where='mid',
+             label='cumulative explained variance')
+    plt.ylabel('Explained variance ratio')
+    plt.xlabel('Principal components')
+    plt.legend(loc='best')
+    plt.tight_layout()
+    plt.show()
+
 
     nmf = NMF(n_components=n_components)
     X_train_nmf = nmf.fit_transform(X_train_std)
@@ -83,14 +106,17 @@ def process_nmf(url, title, n_components, **kwargs):
     plt.ylabel('PC 2')
     plt.show()
 
-    lr = LogisticRegression()
-    lr = lr.fit(X_train_nmf, y_train)
+    # lr = LogisticRegression()
+    # lr = lr.fit(X_train_nmf, y_train)
+    _classifier = ClassifierFactory.get_classifier(kwargs)
+    _classifier.fit(X_train_nmf, y_train)
+
 
     training_png_url = ''
     test_png_url = ''
 
     if n_components == 2:
-        plot_decision_regions(X_train_nmf, y_train, classifier=lr, name="%s training" % title, method=METHOD_NAME)
+        plot_decision_regions(X_train_nmf, y_train, classifier=_classifier, name="%s training" % title, method=METHOD_NAME)
         plt.xlabel('PC 1')
         plt.ylabel('PC 2')
         plt.title(title + ', 2 component NMF, zbiór treningowy')
@@ -99,7 +125,7 @@ def process_nmf(url, title, n_components, **kwargs):
         save_plot_as_png_file(plt)
         plt.show()
 
-        plot_decision_regions(X_test_nmf, y_test, classifier=lr, name="%s test" % title, method=METHOD_NAME)
+        plot_decision_regions(X_test_nmf, y_test, classifier=_classifier, name="%s test" % title, method=METHOD_NAME)
         plt.xlabel('PC 1')
         plt.ylabel('PC 2')
         plt.title(title + ', 2 component NMF, zbiór testowy')
@@ -108,7 +134,7 @@ def process_nmf(url, title, n_components, **kwargs):
         save_plot_as_png_file(plt)
         plt.show()
 
-    count_print_confusion_matrix(X_train_nmf, X_test_nmf, y_train, y_test, lr,
+    count_print_confusion_matrix(X_train_nmf, X_test_nmf, y_train, y_test, _classifier,
                                  run_id=kwargs.get('run_id', '0'),
                                  input_params=input_params,
                                  training_png_url=training_png_url,
@@ -119,4 +145,4 @@ def process_nmf(url, title, n_components, **kwargs):
 
 url1 = "D:\\mgr\\dermatology\\dermatology.data"
 
-#process_nmf(url1, 'Dermatology', n_components=2)
+process_nmf(url1, 'Dermatology', n_components=2)

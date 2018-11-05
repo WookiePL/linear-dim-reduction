@@ -1,0 +1,11 @@
+{
+  "derm_pca3_reduction.py": "PCA",
+  "derm_lda1_reduction.py": "LDA",
+  "derm_nmf1_reduction.py": "NMF",
+  "derm_without_reduction.py": "Bez redukcji",
+  "lr": "Regresja logistyczna",
+  "svm": "SVM",
+  "tree": "Drzewo decyzyjne",
+  "nan": "–",
+  "NaN": "–"
+}

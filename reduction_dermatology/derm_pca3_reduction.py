@@ -12,6 +12,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
 
+from reduction.classifier_factory import ClassifierFactory
 from reduction.utils import save_plot_as_png_file, standardise_classes, plot_decision_regions, plot_colors
 from reduction_dermatology.derm_utils import ignore_all_warnings
 from reduction_dermatology.results_metrics import count_print_confusion_matrix
@@ -19,7 +20,7 @@ from report_model.input_params import InputParams
 
 
 def process_pca(url, title, n_components, **kwargs):
-    input_params = InputParams(os.path.basename(__file__), url, title, n_components)
+    input_params = InputParams(os.path.basename(__file__), url, title, n_components, kwargs.get('classifier', 'lr'))
 
     ignore_all_warnings()
     print('{}, {} component PCA'.format(title, n_components))
@@ -141,12 +142,16 @@ def process_pca(url, title, n_components, **kwargs):
     X_train_pca = pca.fit_transform(X_train_std)
     X_test_pca = pca.transform(X_test_std)
 
-    lr = LogisticRegression()
-    lr = lr.fit(X_train_pca, y_train)
 
-    #TODO implement different learning methods
-    svm = SVC(kernel='rbf', random_state=0, gamma=0.7, C=1.0)
-    svm.fit(X_train_pca, y_train)
+
+    # lr = LogisticRegression()
+    # lr = lr.fit(X_train_pca, y_train)
+    #
+    # #TODO implement different learning methods
+    # svm = SVC(kernel='rbf', random_state=0, gamma=0.7, C=1.0)
+    # svm.fit(X_train_pca, y_train)
+    _classifier = ClassifierFactory.get_classifier(kwargs)
+    _classifier.fit(X_train_pca, y_train)
 
     training_png_url = ''
     test_png_url = ''
@@ -157,7 +162,7 @@ def process_pca(url, title, n_components, **kwargs):
         plt.ylabel('PC 2')
         plt.show()
 
-        plot_decision_regions(X_train_pca, y_train, classifier=svm, name="%s training" % title)
+        plot_decision_regions(X_train_pca, y_train, classifier=_classifier, name="%s training" % title)
         plt.xlabel('PC 1')
         plt.ylabel('PC 2')
         plt.title(title + ', 2 component PCA, zbiór treningowy')
@@ -166,20 +171,20 @@ def process_pca(url, title, n_components, **kwargs):
         training_png_url = save_plot_as_png_file(plt)
         plt.show()
 
-        plot_decision_regions(X_test_pca, y_test, classifier=svm, name="%s test" % title)
+        plot_decision_regions(X_test_pca, y_test, classifier=_classifier, name="%s test" % title)
         plt.xlabel('PC 1')
         plt.ylabel('PC 2')
         plt.title(title + ', 2 component PCA, zbiór testowy')
         plt.legend(loc='upper left')
         plt.tight_layout()
-        test_png_url= save_plot_as_png_file(plt)
+        test_png_url = save_plot_as_png_file(plt)
         plt.show()
 
     count_print_confusion_matrix(X_train_pca,
                                  X_test_pca,
                                  y_train,
                                  y_test,
-                                 lr,
+                                 _classifier,
                                  run_id=kwargs.get('run_id', '0'),
                                  input_params=input_params,
                                  training_png_url=training_png_url,
@@ -189,4 +194,4 @@ def process_pca(url, title, n_components, **kwargs):
 
 url1 = "D:\\mgr\\dermatology\\dermatology.data"
 
-process_pca(url1, 'Dermatology', 4)
+process_pca(url1, 'Dermatology', 2, classifier='forest')

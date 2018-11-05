@@ -9,9 +9,13 @@ from sklearn.linear_model import LogisticRegression
 
 from reduction.results_metrics import count_print_confusion_matrix
 from reduction.utils import plot_decision_regions, save_plot_as_png_file, standardise_classes
+from report_model.input_params import InputParams
+from reduction.classifier_factory import ClassifierFactory
+import os
 
 
-def process_lda(url, title, n_components):
+def process_lda(url, title, n_components, **kwargs):
+    input_params = InputParams(os.path.basename(__file__), url, title, n_components, kwargs.get('classifier', 'lr'))
     METHOD_NAME = 'LDA'
     # załadowanie zbioru danych do Pandas DataFrame
     df = pd.read_csv(url,
@@ -37,14 +41,18 @@ def process_lda(url, title, n_components):
     X_train_std = sc.fit_transform(X_train)
     X_test_std = sc.transform(X_test)
 
-    lda = LDA(n_components=2)
+    lda = LDA(n_components=n_components)
     X_train_lda = lda.fit_transform(X_train_std, y_train)
     X_test_lda = lda.transform(X_test_std)
 
-    lr = LogisticRegression()
-    lr = lr.fit(X_train_lda, y_train)
+    # lr = LogisticRegression()
+    # lr = lr.fit(X_train_lda, y_train)
+    _classifier = ClassifierFactory.get_classifier(kwargs)
+    _classifier.fit(X_train_lda, y_train)
 
-    count_print_confusion_matrix(X_train_lda, X_test_lda, y_train, y_test, lr)
+    count_print_confusion_matrix(X_train_lda, X_test_lda, y_train, y_test, _classifier,
+                                 run_id=kwargs.get('run_id', '0'),
+                                 input_params=input_params)
 
     # plot_decision_regions(X_train_lda, y_train, classifier=lr, name="%s training" % title, method=METHOD_NAME)
     # plt.xlabel('LD 1')
@@ -75,6 +83,6 @@ url3 = "D:\\mgr\\heart-disease\\processed.hungarian.data"
 url4 = "D:\\mgr\\heart-disease\\processed.va.data"
 
 #process_lda(url1, 'Switzerland', 2)
-process_lda(url2, 'Cleveland', 2)
+process_lda(url2, 'Cleveland', 2, classifier='svm')
 #process_lda(url3, 'Hungarian', 2)
 #process_lda(url4, 'Long Beach, CA', 2)

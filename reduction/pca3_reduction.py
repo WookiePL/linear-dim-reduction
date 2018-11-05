@@ -1,3 +1,5 @@
+import os
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -8,11 +10,15 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
+from reduction.classifier_factory import ClassifierFactory
 from reduction.results_metrics import count_print_confusion_matrix
 from reduction.utils import save_plot_as_png_file, standardise_classes, plot_decision_regions, ignore_all_warnings
+from report_model.input_params import InputParams
 
 
-def process_pca(url, title, n_components):
+def process_pca(url, title, n_components, **kwargs):
+    input_params = InputParams(os.path.basename(__file__), url, title, n_components, kwargs.get('classifier', 'lr'))
+
     ignore_all_warnings()
     print('{}, {} component PCA'.format(title, n_components))
     # załadowanie zbioru danych do Pandas DataFrame
@@ -47,17 +53,17 @@ def process_pca(url, title, n_components):
 
     # suma wariancji
     total = sum(eigen_vals)
-    # explained variances
+    # wariancje wyjaśnioen
     var_exp = [(i / total) for i in sorted(eigen_vals, reverse=True)]
-    # cumulative sum of explained variances
+    # łączna suma wariancji wyjaśnionej
     cum_var_exp = np.cumsum(var_exp)
 
     plt.bar(range(1, 14), var_exp, alpha=0.5, align='center',
-            label='individual explained variance')
+            label='pojedyncza wariancja wyjaśniona')
     plt.step(range(1, 14), cum_var_exp, where='mid',
-             label='cumulative explained variance')
-    plt.ylabel('Explained variance ratio')
-    plt.xlabel('Principal components')
+             label='łączna wariancja wyjaśniona')
+    plt.ylabel('współczynnik wariancji wyjaśnionej')
+    plt.xlabel('główne składowe')
     plt.legend(loc='best')
     plt.tight_layout()
     plt.show()
@@ -104,8 +110,13 @@ def process_pca(url, title, n_components):
     X_train_pca = pca.fit_transform(X_train_std)
     X_test_pca = pca.transform(X_test_std)
 
-    lr = LogisticRegression()
-    lr = lr.fit(X_train_pca, y_train)
+    # lr = LogisticRegression()
+    # lr = lr.fit(X_train_pca, y_train)
+    _classifier = ClassifierFactory.get_classifier(kwargs)
+    _classifier.fit(X_train_pca, y_train)
+
+    training_png_url = ''
+    test_png_url = ''
 
     if n_components == 2: # jesli 2 wymiary to mozna narysowac wykres liniowy
         plt.scatter(X_train_pca[:, 0], X_train_pca[:, 1])
@@ -113,28 +124,32 @@ def process_pca(url, title, n_components):
         plt.ylabel('PC 2')
         plt.show()
 
-        plot_decision_regions(X_train_pca, y_train, classifier=lr, name="%s training" % title)
+        plot_decision_regions(X_train_pca, y_train, classifier=_classifier, name="%s training" % title)
         plt.xlabel('PC 1')
         plt.ylabel('PC 2')
         plt.title(title + ', 2 component PCA, zbiór treningowy')
         plt.legend(loc='lower left')
         plt.tight_layout()
-        save_plot_as_png_file(plt)
+        training_png_url = save_plot_as_png_file(plt)
         plt.show()
 
-        plot_decision_regions(X_test_pca, y_test, classifier=lr, name="%s test" % title)
+        plot_decision_regions(X_test_pca, y_test, classifier=_classifier, name="%s test" % title)
         plt.xlabel('PC 1')
         plt.ylabel('PC 2')
         plt.title(title + ', 2 component PCA, zbiór testowy')
         plt.legend(loc='lower left')
         plt.tight_layout()
-        save_plot_as_png_file(plt)
+        test_png_url = save_plot_as_png_file(plt)
         plt.show()
 
-    #TODO: dla NIEZREDUKOWANEGO: count_print_confusion_matrix(X_train, X_test, y_train, y_test, lr)
+    #TODO: dla NIEZREDUKOWANEGO: count_print_confusion_matrix(X_train, X_test, y_train, y_test, _classifier)
 
     #TO JEST DLA ZREDUKOWANEGO BO WYKORZYSTUJE zbiór_pca
-    count_print_confusion_matrix(X_train_pca, X_test_pca, y_train, y_test, lr)
+    count_print_confusion_matrix(X_train_pca, X_test_pca, y_train, y_test, _classifier,
+                        run_id=kwargs.get('run_id', '0'),
+                        input_params=input_params,
+                        training_png_url=training_png_url,
+                        test_png_url=test_png_url)
     pass
 
 
@@ -144,6 +159,6 @@ url3 = "D:\\mgr\\heart-disease\\processed.hungarian.data"
 url4 = "D:\\mgr\\heart-disease\\processed.va.data"
 
 #process_pca(url1, 'Switzerland')
-process_pca(url2, 'Cleveland', n_components=2)
+process_pca(url2, 'Cleveland', n_components=2, classifier='svm')
 #process_pca(url3, 'Hungarian')
 #process_pca(url4, 'Long Beach, CA')

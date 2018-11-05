@@ -1,5 +1,6 @@
 import os
 
+from reduction.classifier_factory import ClassifierFactory
 from reduction.utils import plot_decision_regions, save_plot_as_png_file
 from reduction_dermatology.derm_utils import preprocess_dermatology_data
 import numpy as np
@@ -14,7 +15,7 @@ from report_model.input_params import InputParams
 
 
 def process_lda(url, title, n_components, **kwargs):
-    input_params = InputParams(os.path.basename(__file__), url, title, n_components)
+    input_params = InputParams(os.path.basename(__file__), url, title, n_components, kwargs.get('classifier', 'lr'))
 
     method_name = 'LDA'
 
@@ -93,11 +94,11 @@ def process_lda(url, title, n_components, **kwargs):
     cum_discr = np.cumsum(discr)
 
     plt.bar(range(1, 35), discr, alpha=0.5, align='center',
-            label='individual "discriminability"')
+            label='pojedyncza rozróżnialność')
     plt.step(range(1, 35), cum_discr, where='mid',
-             label='cumulative "discriminability"')
-    plt.ylabel('"discriminability" ratio')
-    plt.xlabel('Linear Discriminants')
+             label='łączna rozróżnialność')
+    plt.ylabel('współczynnik rozróżnialności')
+    plt.xlabel('liniowe dyskryminanty')
     plt.ylim([-0.1, 1.1])
     plt.legend(loc='best')
     plt.tight_layout()
@@ -134,17 +135,19 @@ def process_lda(url, title, n_components, **kwargs):
 
     lda = LDA(n_components=n_components)
     X_train_lda = lda.fit_transform(X_train_std, y_train)
-
-    from sklearn.linear_model import LogisticRegression
-    lr = LogisticRegression()
-    lr = lr.fit(X_train_lda, y_train)
     X_test_lda = lda.transform(X_test_std)
+
+    # from sklearn.linear_model import LogisticRegression
+    # lr = LogisticRegression()
+    # lr = lr.fit(X_train_lda, y_train)
+    _classifier = ClassifierFactory.get_classifier(kwargs)
+    _classifier.fit(X_train_lda, y_train)
 
     training_png_url = ''
     test_png_url = ''
 
     if n_components == 2:
-        plot_decision_regions(X_train_lda, y_train, classifier=lr, name="%s training" % title, method=method_name)
+        plot_decision_regions(X_train_lda, y_train, classifier=_classifier, name="%s training" % title, method=method_name)
         plt.xlabel('LD 1')
         plt.ylabel('LD 2')
         plt.title(title + ', 2 component LDA, zbiór treningowy')
@@ -153,8 +156,7 @@ def process_lda(url, title, n_components, **kwargs):
         training_png_url = save_plot_as_png_file(plt)
         plt.show()
 
-
-        plot_decision_regions(X_test_lda, y_test, classifier=lr, name="%s test" % title, method=method_name)
+        plot_decision_regions(X_test_lda, y_test, classifier=_classifier, name="%s test" % title, method=method_name)
         plt.xlabel('LD 1')
         plt.ylabel('LD 2')
         plt.title(title + ', 2 component LDA, zbiór testowy')
@@ -163,7 +165,7 @@ def process_lda(url, title, n_components, **kwargs):
         test_png_url = save_plot_as_png_file(plt)
         plt.show()
 
-    count_print_confusion_matrix(X_train_lda, X_test_lda, y_train, y_test, lr,
+    count_print_confusion_matrix(X_train_lda, X_test_lda, y_train, y_test, _classifier,
                                  run_id=kwargs.get('run_id', '0'),
                                  input_params=input_params,
                                  training_png_url=training_png_url,
@@ -173,4 +175,4 @@ def process_lda(url, title, n_components, **kwargs):
 
 url1 = "D:\\mgr\\dermatology\\dermatology.data"
 
-#process_lda(url1, 'Dermatology', n_components=2)
+process_lda(url1, 'Dermatology', n_components=2)

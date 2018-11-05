@@ -5,10 +5,10 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
 
-from reduction.utils import plot_decision_regions, save_plot_as_png_file
+from reduction.utils import plot_decision_regions, save_plot_as_png_file, standardise_classes
 
 
-def process_pca(url, title):
+def process_lda(url, title):
     method_name = 'LDA'
     # załadowanie zbioru danych do Pandas DataFrame
     df = pd.read_csv(url,
@@ -23,7 +23,7 @@ def process_pca(url, title):
     # podział na zbiór cech i klasy
     X, y = df.iloc[:, :13].values, df.iloc[:, 13].values
 
-    # y = standardise_classes(y)
+    y = standardise_classes(y)
 
     # podział danych na 70% zbiór treningowy, 30% testowy
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)
@@ -35,14 +35,14 @@ def process_pca(url, title):
 
     np.set_printoptions(precision=3) #ilosc miejsc po przecinku dla liczb w macierzach
     mean_vectors = []
-    for label in range(1, 5):
+    for label in range(1, 3):
         mean_vectors.append(np.mean(X_train_std[y_train == label], axis=0))
         print('MeanVector %s: %s\n' % (label, mean_vectors[label - 1]))
 
     # liczba cech
     d = 13
     S_W = np.zeros((d, d))
-    for label, mv in zip(range(1, 5), mean_vectors):
+    for label, mv in zip(range(1, 2), mean_vectors):
         class_scatter = np.zeros((d, d))
         for row in X_train_std[y_train == label]:
             row, mv = row.reshape(d, 1), mv.reshape(d, 1)
@@ -60,7 +60,7 @@ def process_pca(url, title):
 
     d = 13  # number of features
     S_W = np.zeros((d, d))
-    for label, mv in zip(range(1, 5), mean_vectors):
+    for label, mv in zip(range(1, 2), mean_vectors):
         class_scatter = np.cov(X_train_std[y_train == label].T)
         S_W += class_scatter
     print('Scaled within-class scatter matrix: %sx%s' % (S_W.shape[0],
@@ -70,7 +70,7 @@ def process_pca(url, title):
     mean_overall = np.mean(X_train_std, axis=0)
     d = 13  # number of features
     S_B = np.zeros((d, d))
-    for i, mean_vec in enumerate(mean_vectors):
+    for i, mean_vec in enumerate(mean_vectors[1:2]):
         n = X_train[y_train == i + 1, :].shape[0]
         mean_vec = mean_vec.reshape(d, 1)  # make column vector
         mean_overall = mean_overall.reshape(d, 1)  # make column vector
@@ -120,10 +120,10 @@ def process_pca(url, title):
 
 
     X_train_lda = X_train_std.dot(w)
-    # colors = ['r', 'b', 'g']
-    # markers = ['s', 'x', 'o']
-    markers = ('s', 'x', 'o', '^', 'v')
-    colors = ('red', 'blue', 'lightgreen', 'gray', 'cyan')
+    colors = ['r', 'b', 'g']
+    markers = ['s', 'x', 'o']
+   # markers = ('s', 'x', 'o', '^', 'v')
+   # colors = ('red', 'blue', 'lightgreen', 'gray', 'cyan')
 
     for l, c, m in zip(np.unique(y_train), colors, markers):
         plt.scatter(X_train_lda[y_train == l, 0] * (-1),
@@ -181,7 +181,7 @@ url2 = "D:\\mgr\\heart-disease\\processed.cleveland.data"
 url3 = "D:\\mgr\\heart-disease\\processed.hungarian.data"
 url4 = "D:\\mgr\\heart-disease\\processed.va.data"
 
-# process_pca(url1, 'Switzerland')
-process_pca(url2, 'Cleveland')
-# process_pca(url3, 'Hungarian')
-# process_pca(url4, 'Long Beach, CA')
+# process_lda(url1, 'Switzerland')
+process_lda(url2, 'Cleveland')
+# process_lda(url3, 'Hungarian')
+# process_lda(url4, 'Long Beach, CA')

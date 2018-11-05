@@ -113,7 +113,7 @@ def preprocess_heart_disease_data(url):
     # podział na zbiór cech i klasy
     X, y = df.iloc[:, :13].values, df.iloc[:, 13].values
 
-    # y = standardise_classes(y)
+    y = standardise_classes(y)
 
     # podział danych na 70% zbiór treningowy, 30% testowy
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)

@@ -3,13 +3,18 @@ import pandas as pd
 from sklearn.decomposition import NMF
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
 
 from reduction.results_metrics import count_print_confusion_matrix
 from reduction.utils import save_plot_as_png_file, standardise_classes, plot_decision_regions
+from report_model.input_params import InputParams
+from reduction.classifier_factory import ClassifierFactory
+import os
 
 
-def process_nmf(url, title, n_components):
+def process_nmf(url, title, n_components, **kwargs):
+    input_params = InputParams(os.path.basename(__file__), url, title, n_components, kwargs.get('classifier', 'lr'))
+
     METHOD_NAME = 'NMF'
 
     # załadowanie zbioru danych do Pandas DataFrame
@@ -33,8 +38,10 @@ def process_nmf(url, title, n_components):
     # standaryzacja danych
     # TODO zrobic dobra standatyzacje danych dla NMF
     # sc = MaxAbsScaler()
-    sc = StandardScaler(with_mean=False)
-    # sc = MinMaxScaler(feature_range=(0, 1))
+    if title in ('Hungarian', 'Cleveland'):
+        sc = StandardScaler(with_mean=False)
+    else:
+        sc = MinMaxScaler(feature_range=(1, 2))
     X_train_std = sc.fit_transform(X_train)
     X_test_std = sc.transform(X_test)
 
@@ -47,56 +54,38 @@ def process_nmf(url, title, n_components):
     plt.ylabel('PC 2')
     plt.show()
 
-    # def plot_decision_regions(X, y, classifier, resolution=0.02):
-    # # setup marker generator and color map
-    #     markers = ('s', 'x', 'o', '^', 'v')
-    #     colors = ('red', 'blue', 'lightgreen', 'gray', 'cyan')
-    #     cmap = ListedColormap(colors[:len(np.unique(y))])
-    #
-    #     # plot the decision surface
-    #     x1_min, x1_max = X[:, 0].min() - 1, X[:, 0].max() + 1
-    #     x2_min, x2_max = X[:, 1].min() - 1, X[:, 1].max() + 1
-    #     xx1, xx2 = np.meshgrid(np.arange(x1_min, x1_max, resolution),
-    #                            np.arange(x2_min, x2_max, resolution))
-    #     Z = classifier.predict(np.array([xx1.ravel(), xx2.ravel()]).T)
-    #     Z = Z.reshape(xx1.shape)
-    #     plt.contourf(xx1, xx2, Z, alpha=0.4, cmap=cmap)
-    #     plt.xlim(xx1.min(), xx1.max())
-    #     plt.ylim(xx2.min(), xx2.max())
-    #
-    #     # plot class samples
-    #     for idx, cl in enumerate(np.unique(y)):
-    #         plt.scatter(x=X[y == cl, 0],
-    #                     y=X[y == cl, 1],
-    #                     alpha=0.6,
-    #                     c=cmap(idx),
-    #                     edgecolor='black',
-    #                     marker=markers[idx],
-    #                     label=cl)
+    # lr = LogisticRegression()
+    # lr = lr.fit(X_train_nmf, y_train)
+    _classifier = ClassifierFactory.get_classifier(kwargs)
+    _classifier.fit(X_train_nmf, y_train)
 
-    lr = LogisticRegression()
-    lr = lr.fit(X_train_nmf, y_train)
+    training_png_url = ''
+    test_png_url = ''
 
-    plot_decision_regions(X_train_nmf, y_train, classifier=lr, name="%s test" % title, method=METHOD_NAME)
-    plt.xlabel('PC 1')
-    plt.ylabel('PC 2')
-    plt.title(title + ', 2 component NMF, zbiór treningowy')
-    plt.legend(loc='lower left')
-    plt.tight_layout()
-    save_plot_as_png_file(plt)
-    plt.show()
+    if n_components == 2: # jesli 2 wymiary to mozna narysowac wykres liniowy
+        plot_decision_regions(X_train_nmf, y_train, classifier=_classifier, name="%s test" % title, method=METHOD_NAME)
+        plt.xlabel('PC 1')
+        plt.ylabel('PC 2')
+        plt.title(title + ', 2 component NMF, zbiór treningowy')
+        plt.legend(loc='lower left')
+        plt.tight_layout()
+        training_png_url = save_plot_as_png_file(plt)
+        plt.show()
 
-    plot_decision_regions(X_test_nmf, y_test, classifier=lr, name="%s trening" % title, method=METHOD_NAME)
-    plt.xlabel('PC 1')
-    plt.ylabel('PC 2')
-    plt.title(title + ', 2 component NMF, zbiór testowy')
-    plt.legend(loc='lower left')
-    plt.tight_layout()
-    save_plot_as_png_file(plt)
-    plt.show()
+        plot_decision_regions(X_test_nmf, y_test, classifier=_classifier, name="%s trening" % title, method=METHOD_NAME)
+        plt.xlabel('PC 1')
+        plt.ylabel('PC 2')
+        plt.title(title + ', 2 component NMF, zbiór testowy')
+        plt.legend(loc='lower left')
+        plt.tight_layout()
+        test_png_url = save_plot_as_png_file(plt)
+        plt.show()
 
-
-    count_print_confusion_matrix(X_train_nmf, X_test_nmf, y_train, y_test, lr)
+    count_print_confusion_matrix(X_train_nmf, X_test_nmf, y_train, y_test, _classifier,
+                                 run_id=kwargs.get('run_id', '0'),
+                                 input_params=input_params,
+                                 training_png_url=training_png_url,
+                                 test_png_url=test_png_url)
     pass
 
 
@@ -105,7 +94,7 @@ url2 = "D:\\mgr\\heart-disease\\processed.cleveland.data"
 url3 = "D:\\mgr\\heart-disease\\processed.hungarian.data"
 url4 = "D:\\mgr\\heart-disease\\processed.va.data"
 
-# process_nmf(url1, 'Switzerland', 2)
+process_nmf(url1, 'Switzerland', 2)
 process_nmf(url2, 'Cleveland', 2)
-# process_pca(url3, 'Hungarian', 2)
-# process_pca(url4, 'Long Beach, CA', 2)
+process_nmf(url3, 'Hungarian', 2)
+process_nmf(url4, 'Long Beach, CA', 2)

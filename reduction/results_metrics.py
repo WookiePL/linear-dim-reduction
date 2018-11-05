@@ -1,13 +1,15 @@
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import confusion_matrix, f1_score, accuracy_score, cohen_kappa_score, classification_report, \
-    r2_score
+    r2_score, mean_absolute_error, precision_score, recall_score
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 import numpy as np
 
+from reduction_dermatology.results_metrics import generate_output_report
 
-def count_print_confusion_matrix(X_train, X_test, y_train, y_test, classifier):
+
+def count_print_confusion_matrix(X_train, X_test, y_train, y_test, classifier, **kwargs):
 
     # TO JEST DLA NIEZREDUKOWANEGO:
     # pipe_svc = Pipeline([('scl', StandardScaler()), ('clf', LogisticRegression())])
@@ -32,6 +34,15 @@ def count_print_confusion_matrix(X_train, X_test, y_train, y_test, classifier):
 
     target_names = ['class 0', 'class 1']
     print(classification_report(y_true=y_test, y_pred=y_pred,  target_names=target_names))
+
+    _f1_score = f1_score(y_true=y_test, y_pred=y_pred, average='binary')
+    _error = mean_absolute_error(y_true=y_test, y_pred=y_pred)
+    _accuracy_score = accuracy_score(y_true=y_test, y_pred=y_pred)
+    _cohen_kappa_score = cohen_kappa_score(y_test, y_pred)
+    #r2_score(y_true=y_test, y_pred=y_pred)
+    _precision_score = precision_score(y_true=y_test, y_pred=y_pred, average='binary')
+    _recall_score = recall_score(y_true=y_test, y_pred=y_pred, average='binary')
+    generate_output_report(_accuracy_score, _error, _f1_score, _precision_score, _recall_score, conf_matrix, kwargs)
     pass
 
 

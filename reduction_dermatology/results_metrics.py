@@ -24,13 +24,13 @@ def count_print_confusion_matrix(X_train, X_test, y_train, y_test, classifier, *
     print(conf_matrix)
     plot_confusion_matrix(conf_matrix, target_names, title='Macierz pomyłek')
 
-    _f1_score = f1_score(y_true=y_test, y_pred=y_pred, average='micro')
     _error = mean_absolute_error(y_true=y_test, y_pred=y_pred)
     _accuracy_score = accuracy_score(y_true=y_test, y_pred=y_pred)
     _cohen_kappa_score = cohen_kappa_score(y_test, y_pred)
     #r2_score(y_true=y_test, y_pred=y_pred)
-    _precision_score = precision_score(y_true=y_test, y_pred=y_pred, average='micro')
-    _recall_score = recall_score(y_true=y_test, y_pred=y_pred, average='micro')
+    _f1_score = f1_score(y_true=y_test, y_pred=y_pred, average='macro')
+    _precision_score = precision_score(y_true=y_test, y_pred=y_pred, average='macro')
+    _recall_score = recall_score(y_true=y_test, y_pred=y_pred, average='macro')
 
     #print('Wynik F1: %.4f' % f1_score(y_true=y_test, y_pred=y_pred))
     print('Accuracy: %.4f' % accuracy_score(y_true=y_test, y_pred=y_pred))
@@ -60,11 +60,11 @@ def generate_output_report(_accuracy_score, _error, _f1_score, _precision_score,
                                  input_params=input_params,
                                  plot_training_png_url=training_png_url,
                                  plot_test_png_url=test_png_url,
-                                 f1_score=_f1_score,
-                                 error=_error,
-                                 accuracy=_accuracy_score,
-                                 precision=_precision_score,
-                                 recall=_recall_score,
+                                 f1_score=round(_f1_score, 2),
+                                 error=round(_error, 2),
+                                 accuracy=round(_accuracy_score, 2),
+                                 precision=round(_precision_score, 2),
+                                 recall=round(_recall_score, 2),
                                  conf_matrix=conf_matrix.tolist(),
                                  conf_matrix_png_url='')
     # with open('output_report.json', 'w') as outfile:
@@ -94,7 +94,7 @@ def plot_confusion_matrix(conf_matrix, classes,
 
     print(conf_matrix)
 
-    plt.imshow(conf_matrix, interpolation='nearest', cmap=cmap)
+    plt.imshow(conf_matrix, interpolation='nearest', cmap=cmap, alpha=0.7)
     plt.title(title)
     plt.colorbar()
     tick_marks = np.arange(len(classes))
@@ -102,7 +102,7 @@ def plot_confusion_matrix(conf_matrix, classes,
     plt.yticks(tick_marks, classes)
 
     fmt = '.2f' if normalize else 'd'
-    thresh = conf_matrix.max() / 2.
+    thresh = conf_matrix.max() / 2. * (10/7)
     for i, j in itertools.product(range(conf_matrix.shape[0]), range(conf_matrix.shape[1])):
         plt.text(j, i, format(conf_matrix[i, j], fmt),
                  horizontalalignment="center",
