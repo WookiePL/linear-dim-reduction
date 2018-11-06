@@ -17,7 +17,7 @@ class TestDermatologyReduction(unittest.TestCase):
         warnings.simplefilter(action='ignore', category=FutureWarning)
         warnings.simplefilter(action='ignore', category=DataConversionWarning)
 
-        url1 = "D:\\mgr\\dermatology\\dermatology.data"
+        url1 = "F:\\mgr\\dermatology\\dermatology.data"
         _run_id = get_run_id()
 
         process_pca(url1, 'Dermatology', n_components=2, run_id=_run_id)
@@ -36,7 +36,7 @@ class TestDermatologyReduction(unittest.TestCase):
         warnings.simplefilter(action='ignore', category=FutureWarning)
         warnings.simplefilter(action='ignore', category=DataConversionWarning)
 
-        url1 = "D:\\mgr\\dermatology\\dermatology.data"
+        url1 = "F:\\mgr\\dermatology\\dermatology.data"
         _run_id = get_run_id()
 
         self._all_reduction(url=url1, n_components=2, run_id=_run_id, classifier='lr')

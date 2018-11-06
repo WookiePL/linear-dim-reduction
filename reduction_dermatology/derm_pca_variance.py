@@ -67,6 +67,6 @@ def show_intrinsic_dimensions(url, title):
     print(pd.DataFrame(pca.components_, columns=data_scaled.columns, index=indexes))
 
 
-url1 = "D:\\mgr\\dermatology\\dermatology.data"
+url1 = "F:\\mgr\\dermatology\\dermatology.data"
 
 show_intrinsic_dimensions(url1, 'Dermatology')

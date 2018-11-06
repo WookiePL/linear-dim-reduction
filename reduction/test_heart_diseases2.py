@@ -1,4 +1,4 @@
-import warnings
+import time
 
 from reduction.lda2_reduction import process_lda
 from reduction.nmf1_reduction import process_nmf
@@ -12,17 +12,19 @@ class TestHeartDiseaseDimensionalityReduction:
 
     @classmethod
     def test_process_all_reduction(cls):
-        warnings.simplefilter("ignore")
-        url1 = "D:\\mgr\\heart-disease\\processed.switzerland.data"
-        url2 = "D:\\mgr\\heart-disease\\processed.cleveland.data"
-        url3 = "D:\\mgr\\heart-disease\\processed.hungarian.data"
-        url4 = "D:\\mgr\\heart-disease\\processed.va.data"
+
+        url1 = "F:\\mgr\\heart-disease\\processed.switzerland.data"
+        url2 = "F:\\mgr\\heart-disease\\processed.cleveland.data"
+        url3 = "F:\\mgr\\heart-disease\\processed.hungarian.data"
+        url4 = "F:\\mgr\\heart-disease\\processed.va.data"
 
         _run_id = get_run_id()
 
-        cls._all_cleveland_pca(url2, _run_id)
-        # self._all_cleveland_lda(url2, _run_id)
-        # self._all_cleveland_nmf(url2, _run_id)
+        #cls._all_cleveland(url2, 'Cleveland', _run_id)
+        #cls._all_switzerland(url1, 'Switzerland', _run_id)
+        cls._all_hungarian(url2, 'Hungarian', _run_id)
+        # cls._all_long_beach(url2, 'Long Beach, CA', _run_id)
+
 
 
         # process_lda(url2, 'Cleveland', n_components=2, run_id=_run_id)
@@ -41,16 +43,151 @@ class TestHeartDiseaseDimensionalityReduction:
         # process_lda(url4, 'Long Beach, CA', n_components=2, run_id=_run_id)
         # process_nmf(url4, 'Long Beach, CA', n_components=2, run_id=_run_id)
 
+
+        print('=========================')
+        print('run_id was %s ' % _run_id)
+        print('=========================')
+
     @classmethod
-    def _all_cleveland_pca(cls, url, run_id):
-        process_pca(url, 'Cleveland', n_components=2, run_id=run_id, classifier='lr')
-        process_pca(url, 'Cleveland', n_components=5, run_id=run_id, classifier='lr')
+    def _all_cleveland(cls, url, title, run_id):
+        process_pca(url, title, n_components=2, run_id=run_id, classifier='lr')
+        time.sleep(1)
+        process_pca(url, title, n_components=5, run_id=run_id, classifier='lr')
+        time.sleep(1)
+        process_pca(url, title, n_components=2, run_id=run_id, classifier='svm')
+        time.sleep(1)
+        process_pca(url, title, n_components=5, run_id=run_id, classifier='svm')
+        time.sleep(1)
+        process_pca(url, title, n_components=2, run_id=run_id, classifier='tree')
+        time.sleep(1)
+        process_pca(url, title, n_components=5, run_id=run_id, classifier='tree')
+        time.sleep(1)
+        process_lda(url, title, n_components=1, run_id=run_id, classifier='lr')
+        time.sleep(1)
+        process_lda(url, title, n_components=1, run_id=run_id, classifier='svm')
+        time.sleep(1)
+        process_lda(url, title, n_components=1, run_id=run_id, classifier='tree')
+        time.sleep(1)
+        process_nmf(url, title, n_components=2, run_id=run_id, classifier='lr')
+        time.sleep(1)
+        process_nmf(url, title, n_components=5, run_id=run_id, classifier='lr')
+        time.sleep(1)
+        process_nmf(url, title, n_components=2, run_id=run_id, classifier='svm')
+        time.sleep(1)
+        process_nmf(url, title, n_components=5, run_id=run_id, classifier='svm')
+        time.sleep(1)
+        process_nmf(url, title, n_components=2, run_id=run_id, classifier='tree')
+        time.sleep(1)
+        process_nmf(url, title, n_components=5, run_id=run_id, classifier='tree')
+        time.sleep(1)
+        process_without_reduction(url, title, run_id=run_id, classifier='lr')
+        time.sleep(1)
+        process_without_reduction(url, title, run_id=run_id, classifier='svm')
+        time.sleep(1)
+        process_without_reduction(url, title, run_id=run_id, classifier='tree')
+        time.sleep(1)
 
-        process_pca(url, 'Cleveland', n_components=2, run_id=run_id, classifier='svm')
-        process_pca(url, 'Cleveland', n_components=5, run_id=run_id, classifier='svm')
+    @classmethod
+    def _all_switzerland(cls, url, title, run_id):
+        process_pca(url, title, n_components=3, run_id=run_id, classifier='lr')
+        time.sleep(1)
+        process_pca(url, title, n_components=6, run_id=run_id, classifier='lr')
+        time.sleep(1)
+        process_pca(url, title, n_components=3, run_id=run_id, classifier='svm')
+        time.sleep(1)
+        process_pca(url, title, n_components=6, run_id=run_id, classifier='svm')
+        time.sleep(1)
+        process_pca(url, title, n_components=3, run_id=run_id, classifier='tree')
+        time.sleep(1)
+        process_pca(url, title, n_components=6, run_id=run_id, classifier='tree')
+        time.sleep(1)
+        process_lda(url, title, n_components=1, run_id=run_id, classifier='lr')
+        time.sleep(1)
+        process_lda(url, title, n_components=1, run_id=run_id, classifier='svm')
+        time.sleep(1)
+        process_lda(url, title, n_components=1, run_id=run_id, classifier='tree')
+        time.sleep(1)
+        process_nmf(url, title, n_components=3, run_id=run_id, classifier='lr')
+        time.sleep(1)
+        process_nmf(url, title, n_components=6, run_id=run_id, classifier='lr')
+        time.sleep(1)
+        process_nmf(url, title, n_components=3, run_id=run_id, classifier='svm')
+        time.sleep(1)
+        process_nmf(url, title, n_components=6, run_id=run_id, classifier='svm')
+        time.sleep(1)
+        process_nmf(url, title, n_components=3, run_id=run_id, classifier='tree')
+        time.sleep(1)
+        process_nmf(url, title, n_components=6, run_id=run_id, classifier='tree')
+        time.sleep(1)
+        process_without_reduction(url, title, run_id=run_id, classifier='lr')
+        time.sleep(1)
+        process_without_reduction(url, title, run_id=run_id, classifier='svm')
+        time.sleep(1)
+        process_without_reduction(url, title, run_id=run_id, classifier='tree')
+        time.sleep(1)
 
-        process_pca(url, 'Cleveland', n_components=2, run_id=run_id, classifier='tree')
-        process_pca(url, 'Cleveland', n_components=5, run_id=run_id, classifier='tree')
+    @classmethod
+    def _all_hungarian(cls, url, title, run_id):
+        process_pca(url, title, n_components=2, run_id=run_id, classifier='lr')
+        time.sleep(1)
+        process_pca(url, title, n_components=3, run_id=run_id, classifier='lr')
+        time.sleep(1)
+        process_pca(url, title, n_components=5, run_id=run_id, classifier='lr')
+        time.sleep(1)
+        
+        process_pca(url, title, n_components=2, run_id=run_id, classifier='svm')
+        time.sleep(1)
+        process_pca(url, title, n_components=3, run_id=run_id, classifier='svm')
+        time.sleep(1)
+        process_pca(url, title, n_components=5, run_id=run_id, classifier='svm')
+        time.sleep(1)
+        
+        process_pca(url, title, n_components=2, run_id=run_id, classifier='tree')
+        time.sleep(1)
+        process_pca(url, title, n_components=3, run_id=run_id, classifier='tree')
+        time.sleep(1)
+        process_pca(url, title, n_components=5, run_id=run_id, classifier='tree')
+        time.sleep(1)
+        
+        
+        
+        process_lda(url, title, n_components=1, run_id=run_id, classifier='lr')
+        time.sleep(1)
+        process_lda(url, title, n_components=1, run_id=run_id, classifier='svm')
+        time.sleep(1)
+        process_lda(url, title, n_components=1, run_id=run_id, classifier='tree')
+        time.sleep(1)
+
+
+        process_nmf(url, title, n_components=2, run_id=run_id, classifier='lr')
+        time.sleep(1)
+        process_nmf(url, title, n_components=3, run_id=run_id, classifier='lr')
+        time.sleep(1)
+        process_nmf(url, title, n_components=5, run_id=run_id, classifier='lr')
+        time.sleep(1)
+    
+        process_nmf(url, title, n_components=2, run_id=run_id, classifier='svm')
+        time.sleep(1)
+        process_nmf(url, title, n_components=3, run_id=run_id, classifier='svm')
+        time.sleep(1)
+        process_nmf(url, title, n_components=5, run_id=run_id, classifier='svm')
+        time.sleep(1)
+
+        process_nmf(url, title, n_components=2, run_id=run_id, classifier='tree')
+        time.sleep(1)
+        process_nmf(url, title, n_components=3, run_id=run_id, classifier='tree')
+        time.sleep(1)
+        process_nmf(url, title, n_components=5, run_id=run_id, classifier='tree')
+        time.sleep(1)
+
+
+
+        process_without_reduction(url, title, run_id=run_id, classifier='lr')
+        time.sleep(1)
+        process_without_reduction(url, title, run_id=run_id, classifier='svm')
+        time.sleep(1)
+        process_without_reduction(url, title, run_id=run_id, classifier='tree')
+        time.sleep(1)
 
 
 test = TestHeartDiseaseDimensionalityReduction

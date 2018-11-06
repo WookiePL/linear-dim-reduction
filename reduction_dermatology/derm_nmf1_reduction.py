@@ -8,7 +8,8 @@ from matplotlib.colors import ListedColormap
 from sklearn.linear_model import LogisticRegression
 
 from reduction.classifier_factory import ClassifierFactory
-from reduction.utils import save_plot_as_png_file, standardise_classes, plot_decision_regions
+from reduction.utils import save_plot_as_png_file, standardise_classes, plot_decision_regions, \
+    plot_decision_regions_for_nmf
 from reduction_dermatology.results_metrics import count_print_confusion_matrix
 from report_model.input_params import InputParams
 import os
@@ -116,7 +117,7 @@ def process_nmf(url, title, n_components, **kwargs):
     test_png_url = ''
 
     if n_components == 2:
-        plot_decision_regions(X_train_nmf, y_train, classifier=_classifier, name="%s training" % title, method=METHOD_NAME)
+        plot_decision_regions_for_nmf(X_train_nmf, y_train, classifier=_classifier, name="%s training" % title, method=METHOD_NAME)
         plt.xlabel('PC 1')
         plt.ylabel('PC 2')
         plt.title(title + ', 2 component NMF, zbiór treningowy')
@@ -125,7 +126,7 @@ def process_nmf(url, title, n_components, **kwargs):
         save_plot_as_png_file(plt)
         plt.show()
 
-        plot_decision_regions(X_test_nmf, y_test, classifier=_classifier, name="%s test" % title, method=METHOD_NAME)
+        plot_decision_regions_for_nmf(X_test_nmf, y_test, classifier=_classifier, name="%s test" % title, method=METHOD_NAME)
         plt.xlabel('PC 1')
         plt.ylabel('PC 2')
         plt.title(title + ', 2 component NMF, zbiór testowy')
@@ -143,6 +144,6 @@ def process_nmf(url, title, n_components, **kwargs):
 
 
 
-url1 = "D:\\mgr\\dermatology\\dermatology.data"
+url1 = "F:\\mgr\\dermatology\\dermatology.data"
 
 process_nmf(url1, 'Dermatology', n_components=2)

@@ -6,11 +6,11 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 
 from reduction.results_metrics import count_print_confusion_matrix
-from reduction.utils import save_plot_as_png_file, standardise_classes, plot_decision_regions, \
-    plot_decision_regions_for_nmf
+from reduction.utils import save_plot_as_png_file, standardise_classes, plot_decision_regions
 from report_model.input_params import InputParams
 from reduction.classifier_factory import ClassifierFactory
 import os
+import numpy as np
 
 
 def process_nmf(url, title, n_components, **kwargs):
@@ -46,47 +46,30 @@ def process_nmf(url, title, n_components, **kwargs):
     X_train_std = sc.fit_transform(X_train)
     X_test_std = sc.transform(X_test)
 
-    nmf = NMF(n_components=2)
-    X_train_nmf = nmf.fit_transform(X_train_std)
-    X_test_nmf = nmf.transform(X_test_std)
 
-    plt.scatter(X_train_nmf[:, 0], X_train_nmf[:, 1])
-    plt.xlabel('PC 1')
-    plt.ylabel('PC 2')
+    # otrzymywanie wartości własnych (eigenvalues)
+    cov_mat = np.cov(X_train_std.T)
+    eigen_vals, eigen_vecs = np.linalg.eig(cov_mat)
+    print('Eigenvalues \n%s' % eigen_vals)
+
+    # suma wariancji
+    total = sum(eigen_vals)
+    # wariancje wyjaśnioen
+    var_exp = [(i / total) for i in sorted(eigen_vals, reverse=True)]
+    # łączna suma wariancji wyjaśnionej
+    cum_var_exp = np.cumsum(var_exp)
+
+    plt.bar(range(1, 14), var_exp, alpha=0.5, align='center',
+            label='pojedyncza wariancja wyjaśniona')
+    plt.step(range(1, 14), cum_var_exp, where='mid',
+             label='łączna wariancja wyjaśniona')
+    plt.ylabel('współczynnik wariancji wyjaśnionej')
+    plt.xlabel('główne składowe')
+    plt.legend(loc='best')
+    plt.tight_layout()
     plt.show()
 
-    # lr = LogisticRegression()
-    # lr = lr.fit(X_train_nmf, y_train)
-    _classifier = ClassifierFactory.get_classifier(kwargs)
-    _classifier.fit(X_train_nmf, y_train)
 
-    training_png_url = ''
-    test_png_url = ''
-
-    if n_components == 2: # jesli 2 wymiary to mozna narysowac wykres liniowy
-        plot_decision_regions_for_nmf(X_train_nmf, y_train, classifier=_classifier, name="%s test" % title, method=METHOD_NAME)
-        plt.xlabel('PC 1')
-        plt.ylabel('PC 2')
-        plt.title(title + ', 2 component NMF, zbiór treningowy')
-        plt.legend(loc='lower left')
-        plt.tight_layout()
-        training_png_url = save_plot_as_png_file(plt)
-        plt.show()
-
-        plot_decision_regions_for_nmf(X_test_nmf, y_test, classifier=_classifier, name="%s trening" % title, method=METHOD_NAME)
-        plt.xlabel('PC 1')
-        plt.ylabel('PC 2')
-        plt.title(title + ', 2 component NMF, zbiór testowy')
-        plt.legend(loc='lower left')
-        plt.tight_layout()
-        test_png_url = save_plot_as_png_file(plt)
-        plt.show()
-
-    count_print_confusion_matrix(X_train_nmf, X_test_nmf, y_train, y_test, _classifier,
-                                 run_id=kwargs.get('run_id', '0'),
-                                 input_params=input_params,
-                                 training_png_url=training_png_url,
-                                 test_png_url=test_png_url)
     pass
 
 
@@ -96,6 +79,6 @@ url2 = "F:\\mgr\\heart-disease\\processed.cleveland.data"
 # url4 = "F:\\mgr\\heart-disease\\processed.va.data"
 #
 # process_nmf(url1, 'Switzerland', 2)
-#process_nmf(url2, 'Cleveland', 2)
+process_nmf(url2, 'Cleveland', 2)
 # process_nmf(url3, 'Hungarian', 2)
 # process_nmf(url4, 'Long Beach, CA', 2)

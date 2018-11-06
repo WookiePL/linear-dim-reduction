@@ -38,6 +38,6 @@ def process_without_reduction(url, title, **kwargs):
     pass
 
 
-url2 = "D:\\mgr\\heart-disease\\processed.cleveland.data"
-
-process_without_reduction(url2, 'Cleveland', classifier='svm')
+# url2 = "F:\\mgr\\heart-disease\\processed.cleveland.data"
+#
+# process_without_reduction(url2, 'Cleveland', classifier='svm')

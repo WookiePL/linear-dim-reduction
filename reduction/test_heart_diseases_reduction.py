@@ -11,10 +11,10 @@ from reduction.without_reduction import process_without_reduction
 class TestHeartDiseaseDimensionalityReduction(unittest.TestCase):
     def test_process_all_reduction(self):
         warnings.simplefilter("ignore")
-        url1 = "D:\\mgr\\heart-disease\\processed.switzerland.data"
-        url2 = "D:\\mgr\\heart-disease\\processed.cleveland.data"
-        url3 = "D:\\mgr\\heart-disease\\processed.hungarian.data"
-        url4 = "D:\\mgr\\heart-disease\\processed.va.data"
+        url1 = "F:\\mgr\\heart-disease\\processed.switzerland.data"
+        url2 = "F:\\mgr\\heart-disease\\processed.cleveland.data"
+        url3 = "F:\\mgr\\heart-disease\\processed.hungarian.data"
+        url4 = "F:\\mgr\\heart-disease\\processed.va.data"
 
         _run_id = get_run_id()
 
@@ -38,10 +38,10 @@ class TestHeartDiseaseDimensionalityReduction(unittest.TestCase):
         # warnings.filterwarnings("ignore")
         warnings.simplefilter("ignore")
 
-        url1 = "D:\\mgr\\heart-disease\\processed.switzerland.data"
-        url2 = "D:\\mgr\\heart-disease\\processed.cleveland.data"
-        url3 = "D:\\mgr\\heart-disease\\processed.hungarian.data"
-        url4 = "D:\\mgr\\heart-disease\\processed.va.data"
+        url1 = "F:\\mgr\\heart-disease\\processed.switzerland.data"
+        url2 = "F:\\mgr\\heart-disease\\processed.cleveland.data"
+        url3 = "F:\\mgr\\heart-disease\\processed.hungarian.data"
+        url4 = "F:\\mgr\\heart-disease\\processed.va.data"
         _run_id = get_run_id()
 
         self._all_for_dataset(url2, 'Cleveland', n_components=2, run_id=_run_id)

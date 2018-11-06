@@ -40,7 +40,7 @@ def process_without_reduction(url, title, **kwargs):
     pass
 
 
-url1 = "D:\\mgr\\dermatology\\dermatology.data"
+url1 = "F:\\mgr\\dermatology\\dermatology.data"
 
 # process_without_reduction(url1, 'Dermatology')
 process_without_reduction(url1, 'Dermatology', classifier='tree')

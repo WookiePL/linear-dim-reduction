@@ -41,7 +41,7 @@ def grid_search(url):
 
 def parallel_func():
     warnings.simplefilter(action='ignore', category=DataConversionWarning)
-    grid_search(url="D:\\mgr\\dermatology\\dermatology.data")
+    grid_search(url="F:\\mgr\\dermatology\\dermatology.data")
     return Parallel(n_jobs=2)(delayed(func)() for _ in range(2))
 
 

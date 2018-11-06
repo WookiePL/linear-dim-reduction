@@ -42,10 +42,10 @@ def process_pca(url, title):
 
     pass
 
-url1 = "D:\\mgr\\heart-disease\\processed.switzerland.data"
-url2 = "D:\\mgr\\heart-disease\\processed.cleveland.data"
-url3 = "D:\\mgr\\heart-disease\\processed.hungarian.data"
-url4 = "D:\\mgr\\heart-disease\\processed.va.data"
+url1 = "F:\\mgr\\heart-disease\\processed.switzerland.data"
+url2 = "F:\\mgr\\heart-disease\\processed.cleveland.data"
+url3 = "F:\\mgr\\heart-disease\\processed.hungarian.data"
+url4 = "F:\\mgr\\heart-disease\\processed.va.data"
 
 #process_pca(url1, 'Switzerland')
 process_pca(url2, 'Cleveland')

@@ -37,10 +37,10 @@ def show_intrinsic_dimensions(url, title):
     print(pd.DataFrame(pca.components_, columns=data_scaled.columns, index=indexes))
 
 
-url1 = "D:\\mgr\\heart-disease\\processed.switzerland.data"
-url2 = "D:\\mgr\\heart-disease\\processed.cleveland.data"
-url3 = "D:\\mgr\\heart-disease\\processed.hungarian.data"
-url4 = "D:\\mgr\\heart-disease\\processed.va.data"
+url1 = "F:\\mgr\\heart-disease\\processed.switzerland.data"
+url2 = "F:\\mgr\\heart-disease\\processed.cleveland.data"
+url3 = "F:\\mgr\\heart-disease\\processed.hungarian.data"
+url4 = "F:\\mgr\\heart-disease\\processed.va.data"
 
 show_intrinsic_dimensions(url1, 'Switzerland')
 show_intrinsic_dimensions(url2, 'Cleveland')

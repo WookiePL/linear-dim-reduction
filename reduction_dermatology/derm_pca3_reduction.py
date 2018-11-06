@@ -192,6 +192,6 @@ def process_pca(url, title, n_components, **kwargs):
     pass
 
 
-url1 = "D:\\mgr\\dermatology\\dermatology.data"
+url1 = "F:\\mgr\\dermatology\\dermatology.data"
 
 process_pca(url1, 'Dermatology', 2, classifier='forest')

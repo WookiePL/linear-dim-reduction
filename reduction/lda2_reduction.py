@@ -77,12 +77,13 @@ def process_lda(url, title, n_components, **kwargs):
     pass
 
 
-url1 = "D:\\mgr\\heart-disease\\processed.switzerland.data"
-url2 = "D:\\mgr\\heart-disease\\processed.cleveland.data"
-url3 = "D:\\mgr\\heart-disease\\processed.hungarian.data"
-url4 = "D:\\mgr\\heart-disease\\processed.va.data"
+url1 = "F:\\mgr\\heart-disease\\processed.switzerland.data"
+url2 = "F:\\mgr\\heart-disease\\processed.cleveland.data"
+url3 = "F:\\mgr\\heart-disease\\processed.hungarian.data"
+url4 = "F:\\mgr\\heart-disease\\processed.va.data"
 
-#process_lda(url1, 'Switzerland', 2)
-process_lda(url2, 'Cleveland', 2, classifier='svm')
+#process_lda(url1, 'Switzerland', 2, classifier='lr')
+# process_lda(url2, 'Cleveland', 1, classifier='lr')
+# process_lda(url2, 'Cleveland', 8, classifier='lr')
 #process_lda(url3, 'Hungarian', 2)
 #process_lda(url4, 'Long Beach, CA', 2)

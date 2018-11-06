@@ -83,6 +83,42 @@ def plot_decision_regions(X, y, classifier, name, resolution=0.02, **kwargs):
                     label=cl)
 
 
+def plot_decision_regions_for_nmf(X, y, classifier, name, resolution=0.02, **kwargs):
+    # setup marker generator and color map
+    markers = ('s', 'x', 'o', '^', 'v', '+')
+    colors = ('red', 'blue', 'lightgreen', 'gray', 'cyan', 'orange')
+    cmap = ListedColormap(colors[:len(np.unique(y))])
+
+    # plot the decision surface
+    contour = 0.1
+    x1_min, x1_max = X[:, 0].min() - contour, X[:, 0].max() + contour
+    x2_min, x2_max = X[:, 1].min() - contour, X[:, 1].max() + contour
+    xx1, xx2 = np.meshgrid(np.arange(x1_min, x1_max, resolution),
+                           np.arange(x2_min, x2_max, resolution))
+    Z = classifier.predict(np.array([xx1.ravel(), xx2.ravel()]).T)
+    Z = Z.reshape(xx1.shape)
+
+    # calculate and print prediction accuracy
+    pred_test = classifier.predict(X)
+    method = kwargs.get('method', 'PCA')
+    print('\nPrediction accuracy for the %s dataset with %s' % (name, method))
+    print('{:.2%}\n'.format(metrics.accuracy_score(y, pred_test)))
+
+    plt.contourf(xx1, xx2, Z, alpha=0.4, cmap=cmap)
+    plt.xlim(xx1.min(), xx1.max())
+    plt.ylim(xx2.min(), xx2.max())
+
+    # plot class samples
+    for idx, cl in enumerate(np.unique(y)):
+        plt.scatter(x=X[y == cl, 0],
+                    y=X[y == cl, 1],
+                    alpha=0.6,
+                    c=cmap(idx),
+                    edgecolor='black',
+                    marker=markers[idx],
+                    label=cl)
+
+
 # TO REMOVE
 def show_prediction_accuracy(y_test, pred_test, pred_test_std):
     # Show prediction accuracies in scaled and unscaled data.

@@ -35,7 +35,7 @@ def process_pca(url, title, n_components, **kwargs):
     # podział na zbiór cech i klasy
     X, y = df.iloc[:, :13].values, df.iloc[:, 13].values
 
-    #standaryzacja klas (wartosci > 1 => 1)
+    # standaryzacja klas (wartosci > 1 => 1)
     y = standardise_classes(y)
 
     # podział danych na 70% zbiór treningowy, 30% testowy
@@ -118,7 +118,7 @@ def process_pca(url, title, n_components, **kwargs):
     training_png_url = ''
     test_png_url = ''
 
-    if n_components == 2: # jesli 2 wymiary to mozna narysowac wykres liniowy
+    if n_components == 2:  # jesli 2 wymiary to mozna narysowac wykres liniowy
         plt.scatter(X_train_pca[:, 0], X_train_pca[:, 1])
         plt.xlabel('PC 1')
         plt.ylabel('PC 2')
@@ -142,23 +142,23 @@ def process_pca(url, title, n_components, **kwargs):
         test_png_url = save_plot_as_png_file(plt)
         plt.show()
 
-    #TODO: dla NIEZREDUKOWANEGO: count_print_confusion_matrix(X_train, X_test, y_train, y_test, _classifier)
+    # TODO: dla NIEZREDUKOWANEGO: count_print_confusion_matrix(X_train, X_test, y_train, y_test, _classifier)
 
-    #TO JEST DLA ZREDUKOWANEGO BO WYKORZYSTUJE zbiór_pca
+    # TO JEST DLA ZREDUKOWANEGO BO WYKORZYSTUJE zbiór_pca
     count_print_confusion_matrix(X_train_pca, X_test_pca, y_train, y_test, _classifier,
-                        run_id=kwargs.get('run_id', '0'),
-                        input_params=input_params,
-                        training_png_url=training_png_url,
-                        test_png_url=test_png_url)
+                                 run_id=kwargs.get('run_id', '0'),
+                                 input_params=input_params,
+                                 training_png_url=training_png_url,
+                                 test_png_url=test_png_url)
     pass
 
 
-url1 = "D:\\mgr\\heart-disease\\processed.switzerland.data"
-url2 = "D:\\mgr\\heart-disease\\processed.cleveland.data"
-url3 = "D:\\mgr\\heart-disease\\processed.hungarian.data"
-url4 = "D:\\mgr\\heart-disease\\processed.va.data"
+url1 = "F:\\mgr\\heart-disease\\processed.switzerland.data"
+url2 = "F:\\mgr\\heart-disease\\processed.cleveland.data"
+url3 = "F:\\mgr\\heart-disease\\processed.hungarian.data"
+url4 = "F:\\mgr\\heart-disease\\processed.va.data"
 
-#process_pca(url1, 'Switzerland')
-process_pca(url2, 'Cleveland', n_components=2, classifier='svm')
-#process_pca(url3, 'Hungarian')
-#process_pca(url4, 'Long Beach, CA')
+#process_pca(url1, 'Switzerland', n_components=3, classifier='lr')
+# process_pca(url2, 'Cleveland', n_components=2, classifier='lr')
+#process_pca(url3, 'Hungarian', n_components=2, classifier='lr')
+#process_pca(url4, 'Long Beach, CA', n_components=2, classifier='lr')

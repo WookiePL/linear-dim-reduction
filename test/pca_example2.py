@@ -3,7 +3,7 @@ import pandas as pd
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 
-url = "D:\\mgr\\iris\\iris.data"
+url = "F:\\mgr\\iris\\iris.data"
 
 # załadowanie zbioru danych do Pandas DataFrame
 df = pd.read_csv(url, names=['sepal length', 'sepal width', 'petal length', 'petal width', 'target'])

@@ -103,6 +103,6 @@ def process_nmf(url, title):
 
 
 
-url1 = "D:\\mgr\\dermatology\\dermatology.data"
+url1 = "F:\\mgr\\dermatology\\dermatology.data"
 
 process_nmf(url1, 'Dermatology')
