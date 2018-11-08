@@ -41,7 +41,7 @@ def process_nmf(url, title, n_components, **kwargs):
     if title in ('Hungarian', 'Cleveland'):
         sc = StandardScaler(with_mean=False)
     else:
-        sc = MinMaxScaler(feature_range=(1, 2))
+        sc = MinMaxScaler(feature_range=(1, 3))
     X_train_std = sc.fit_transform(X_train)
     X_test_std = sc.transform(X_test)
 

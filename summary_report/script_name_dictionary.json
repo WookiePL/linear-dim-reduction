@@ -6,6 +6,8 @@
   "lr": "Regresja logistyczna",
   "svm": "SVM",
   "tree": "Drzewo decyzyjne",
-  "nan": "–",
-  "NaN": "–"
+  "pca3_reduction.py": "PCA",
+  "lda2_reduction.py": "LDA",
+  "nmf1_reduction.py": "NMF",
+  "without_reduction.py": "Bez redukcji"
 }

@@ -28,9 +28,9 @@ def count_print_confusion_matrix(X_train, X_test, y_train, y_test, classifier, *
     _accuracy_score = accuracy_score(y_true=y_test, y_pred=y_pred)
     _cohen_kappa_score = cohen_kappa_score(y_test, y_pred)
     #r2_score(y_true=y_test, y_pred=y_pred)
-    _f1_score = f1_score(y_true=y_test, y_pred=y_pred, average='macro')
-    _precision_score = precision_score(y_true=y_test, y_pred=y_pred, average='macro')
-    _recall_score = recall_score(y_true=y_test, y_pred=y_pred, average='macro')
+    _f1_score = f1_score(y_true=y_test, y_pred=y_pred, average='micro')
+    _precision_score = precision_score(y_true=y_test, y_pred=y_pred, average='micro')
+    _recall_score = recall_score(y_true=y_test, y_pred=y_pred, average='micro')
 
     #print('Wynik F1: %.4f' % f1_score(y_true=y_test, y_pred=y_pred))
     print('Accuracy: %.4f' % accuracy_score(y_true=y_test, y_pred=y_pred))

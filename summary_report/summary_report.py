@@ -127,9 +127,10 @@ class SummaryReport:
 # report_df = sr.generate_summary_report(run_id='2018-11-03 141716')
 
 sr = SummaryReport()
-report_df = sr.generate_summary_report(run_id='2018-11-05 115020')
+report_df = sr.generate_summary_report(run_id='2018-11-06 045850')
 pretty_report_df = sr.make_report_pretty(report_df)
-
+pretty_report_df.to_pickle('D:\\private-projects\\linear-dim-reduction\\summary_report\\pretty_pickle.dat')
+pass
 #sr.gen_docx_from_df(report_df)
 
 

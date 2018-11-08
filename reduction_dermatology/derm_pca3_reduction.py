@@ -90,11 +90,11 @@ def process_pca(url, title, n_components, **kwargs):
     cum_var_exp = np.cumsum(var_exp)
 
     plt.bar(range(1, 35), var_exp, alpha=0.5, align='center',
-            label='individual explained variance')
+            label='pojedyncza wariancja wyjaśniona')
     plt.step(range(1, 35), cum_var_exp, where='mid',
-             label='cumulative explained variance')
-    plt.ylabel('Explained variance ratio')
-    plt.xlabel('Principal components')
+             label='łączna wariancja wyjaśniona')
+    plt.ylabel('współczynnik wariancji wyjaśnionej')
+    plt.xlabel('główne składowe')
     plt.legend(loc='best')
     plt.tight_layout()
     plt.show()
@@ -194,4 +194,4 @@ def process_pca(url, title, n_components, **kwargs):
 
 url1 = "D:\\mgr\\dermatology\\dermatology.data"
 
-process_pca(url1, 'Dermatology', 2, classifier='forest')
+process_pca(url1, 'Dermatology', 2, classifier='lr')
