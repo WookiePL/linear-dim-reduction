@@ -173,6 +173,6 @@ def process_lda(url, title, n_components, **kwargs):
     pass
 
 
-url1 = "D:\\mgr\\dermatology\\dermatology.data"
+url1 = "/Users/up205130/projects/ml/dell-hp-computer-backup/hp/mgr/dermatology/dermatology.data"
 
 process_lda(url1, 'Dermatology', n_components=2)

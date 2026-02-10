@@ -46,7 +46,7 @@ def preprocess_dermatology_data(url):
                             'class'])
 
     df = df.replace('?', '0')
-    df.convert_objects(convert_numeric=True)
+    df = df.apply(pd.to_numeric, errors="coerce")
 
     # podział na zbiór cech i klasy
     X, y = df.iloc[:, :34].values, df.iloc[:, 34].values

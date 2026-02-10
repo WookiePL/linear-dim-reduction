@@ -108,7 +108,7 @@ def preprocess_heart_disease_data(url):
 
     df = df.replace('?', '0')
 
-    df.convert_objects(convert_numeric=True)
+    df = df.apply(pd.to_numeric, errors="coerce")
 
     # podział na zbiór cech i klasy
     X, y = df.iloc[:, :13].values, df.iloc[:, 13].values

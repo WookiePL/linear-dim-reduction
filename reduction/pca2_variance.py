@@ -13,7 +13,7 @@ def show_intrinsic_dimensions(url, title):
     features = ['age', 'sex', 'cp', 'trestbps', 'chol', 'fbs', 'restecg', 'thalach', 'exang', 'oldpeak', 'slope', 'ca',
                 'thal']
     df = df.replace('?', '0')
-    df.convert_objects(convert_numeric=True)
+    df = df.apply(pd.to_numeric, errors="coerce")
 
     # normalize data
     data_scaled = pd.DataFrame(preprocessing.scale(df), columns=df.columns)
@@ -37,10 +37,10 @@ def show_intrinsic_dimensions(url, title):
     print(pd.DataFrame(pca.components_, columns=data_scaled.columns, index=indexes))
 
 
-url1 = "D:\\mgr\\heart-disease\\processed.switzerland.data"
-url2 = "D:\\mgr\\heart-disease\\processed.cleveland.data"
-url3 = "D:\\mgr\\heart-disease\\processed.hungarian.data"
-url4 = "D:\\mgr\\heart-disease\\processed.va.data"
+url1 = "/Users/up205130/projects/ml/dell-hp-computer-backup/hp/mgr/heart-disease/processed.switzerland.data"
+url2 = "/Users/up205130/projects/ml/dell-hp-computer-backup/hp/mgr/heart-disease/processed.cleveland.data"
+url3 = "/Users/up205130/projects/ml/dell-hp-computer-backup/hp/mgr/heart-disease/processed.hungarian.data"
+url4 = "/Users/up205130/projects/ml/dell-hp-computer-backup/hp/mgr/heart-disease/processed.va.data"
 
 show_intrinsic_dimensions(url1, 'Switzerland')
 show_intrinsic_dimensions(url2, 'Cleveland')

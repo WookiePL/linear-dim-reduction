@@ -20,7 +20,7 @@ def process_pca(url, title):
 
     df = df.replace('?', '0')
 
-    df.convert_objects(convert_numeric=True)
+    df = df.apply(pd.to_numeric, errors="coerce")
     print(df.dtypes)
 
     # podział na zbiór cech i klasy
@@ -42,10 +42,10 @@ def process_pca(url, title):
 
     pass
 
-url1 = "D:\\mgr\\heart-disease\\processed.switzerland.data"
-url2 = "D:\\mgr\\heart-disease\\processed.cleveland.data"
-url3 = "D:\\mgr\\heart-disease\\processed.hungarian.data"
-url4 = "D:\\mgr\\heart-disease\\processed.va.data"
+url1 = "/Users/up205130/projects/ml/dell-hp-computer-backup/hp/mgr/heart-disease/processed.switzerland.data"
+url2 = "/Users/up205130/projects/ml/dell-hp-computer-backup/hp/mgr/heart-disease/processed.cleveland.data"
+url3 = "/Users/up205130/projects/ml/dell-hp-computer-backup/hp/mgr/heart-disease/processed.hungarian.data"
+url4 = "/Users/up205130/projects/ml/dell-hp-computer-backup/hp/mgr/heart-disease/processed.va.data"
 
 #process_pca(url1, 'Switzerland')
 process_pca(url2, 'Cleveland')

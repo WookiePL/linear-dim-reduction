@@ -57,7 +57,7 @@ def process_nmf(url, title, n_components, **kwargs):
                             'class'])
 
     df = df.replace('?', '0')
-    df.convert_objects(convert_numeric=True)
+    df = df.apply(pd.to_numeric, errors="coerce")
 
     # podział na zbiór cech i klasy
     X, y = df.iloc[:, :34].values, df.iloc[:, 34].values
@@ -143,6 +143,6 @@ def process_nmf(url, title, n_components, **kwargs):
 
 
 
-url1 = "D:\\mgr\\dermatology\\dermatology.data"
+url1 = "/Users/up205130/projects/ml/dell-hp-computer-backup/hp/mgr/dermatology/dermatology.data"
 
 process_nmf(url1, 'Dermatology', n_components=2)

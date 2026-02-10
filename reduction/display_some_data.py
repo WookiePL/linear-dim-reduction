@@ -14,10 +14,10 @@ def preprocess(url, name):
     my_file.close()
 
 
-url1 = "D:\\mgr\\heart-disease\\processed.switzerland.data"
-url2 = "D:\\mgr\\heart-disease\\processed.cleveland.data"
-url3 = "D:\\mgr\\heart-disease\\processed.hungarian.data"
-url4 = "D:\\mgr\\heart-disease\\processed.va.data"
+url1 = "/Users/up205130/projects/ml/dell-hp-computer-backup/hp/mgr/heart-disease/processed.switzerland.data"
+url2 = "/Users/up205130/projects/ml/dell-hp-computer-backup/hp/mgr/heart-disease/processed.cleveland.data"
+url3 = "/Users/up205130/projects/ml/dell-hp-computer-backup/hp/mgr/heart-disease/processed.hungarian.data"
+url4 = "/Users/up205130/projects/ml/dell-hp-computer-backup/hp/mgr/heart-disease/processed.va.data"
 
 # preprocess(url1, 'Switzerland')
 preprocess(url2, 'Cleveland')

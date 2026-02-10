@@ -43,7 +43,7 @@ def show_intrinsic_dimensions(url, title):
                             'Age (linear)'])
 
     df = df.replace('?', '0')
-    df.convert_objects(convert_numeric=True)
+    df = df.apply(pd.to_numeric, errors="coerce")
 
     # normalize data
     data_scaled = pd.DataFrame(preprocessing.scale(df), columns=df.columns)
@@ -67,6 +67,6 @@ def show_intrinsic_dimensions(url, title):
     print(pd.DataFrame(pca.components_, columns=data_scaled.columns, index=indexes))
 
 
-url1 = "D:\\mgr\\dermatology\\dermatology.data"
+url1 = "/Users/up205130/projects/ml/dell-hp-computer-backup/hp/mgr/dermatology/dermatology.data"
 
 show_intrinsic_dimensions(url1, 'Dermatology')

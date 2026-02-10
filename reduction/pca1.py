@@ -13,7 +13,8 @@ def process_pca(url, title):
     features = ['age', 'sex', 'cp', 'trestbps', 'chol', 'fbs', 'restecg', 'thalach', 'exang', 'oldpeak', 'slope', 'ca',
                 'thal']
     df = df.replace('?', '0')
-    df.convert_objects(convert_numeric=True)
+    df = df.apply(pd.to_numeric, errors="coerce")
+
 
     # Separating out the features
     x = df.loc[:, features].values
@@ -21,6 +22,7 @@ def process_pca(url, title):
     # Separating out the target
     y = df.loc[:, ['num, the predicted attribute']].values
 
+    y = y.copy()
     for index, item in enumerate(y):
         if not (item == 0):
             y[index] = 1
@@ -57,11 +59,10 @@ def process_pca(url, title):
     ax.grid()
     plt.show()
 
-
-url1 = "D:\\mgr\\heart-disease\\processed.switzerland.data"
-url2 = "D:\\mgr\\heart-disease\\processed.cleveland.data"
-url3 = "D:\\mgr\\heart-disease\\processed.hungarian.data"
-url4 = "D:\\mgr\\heart-disease\\processed.va.data"
+url1 = "/Users/up205130/projects/ml/dell-hp-computer-backup/hp/mgr/heart-disease/processed.switzerland.data"
+url2 = "/Users/up205130/projects/ml/dell-hp-computer-backup/hp/mgr/heart-disease/processed.cleveland.data"
+url3 = "/Users/up205130/projects/ml/dell-hp-computer-backup/hp/mgr/heart-disease/processed.hungarian.data"
+url4 = "/Users/up205130/projects/ml/dell-hp-computer-backup/hp/mgr/heart-disease/processed.va.data"
 
 process_pca(url1, 'Switzerland')
 process_pca(url2, 'Cleveland')

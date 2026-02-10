@@ -25,11 +25,12 @@ def process_lda(url, title, n_components, **kwargs):
     df = df.replace('?', '0')
     # df.columns = ['age', 'sex', 'cp', 'trestbps', 'chol', 'fbs', 'restecg', 'thalach', 'exang', 'oldpeak', 'slope',
     #               'ca', 'thal', 'num, the predicted attribute']
-    df.convert_objects(convert_numeric=True)
+    df = df.apply(pd.to_numeric, errors="coerce")
 
     # podział na zbiór cech i klasy
     X, y = df.iloc[:, :13].values, df.iloc[:, 13].values
 
+    y = y.copy()
     y = standardise_classes(y)
 
     # podział danych na 70% zbiór treningowy, 30% testowy
@@ -77,10 +78,10 @@ def process_lda(url, title, n_components, **kwargs):
     pass
 
 
-url1 = "D:\\mgr\\heart-disease\\processed.switzerland.data"
-url2 = "D:\\mgr\\heart-disease\\processed.cleveland.data"
-url3 = "D:\\mgr\\heart-disease\\processed.hungarian.data"
-url4 = "D:\\mgr\\heart-disease\\processed.va.data"
+url1 = "/Users/up205130/projects/ml/dell-hp-computer-backup/hp/mgr/heart-disease/processed.switzerland.data"
+url2 = "/Users/up205130/projects/ml/dell-hp-computer-backup/hp/mgr/heart-disease/processed.cleveland.data"
+url3 = "/Users/up205130/projects/ml/dell-hp-computer-backup/hp/mgr/heart-disease/processed.hungarian.data"
+url4 = "/Users/up205130/projects/ml/dell-hp-computer-backup/hp/mgr/heart-disease/processed.va.data"
 
 #process_lda(url1, 'Switzerland', 2)
 process_lda(url2, 'Cleveland', 2, classifier='svm')
